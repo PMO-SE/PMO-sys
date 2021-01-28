@@ -1,0 +1,281 @@
+<!-- Add Modal -->
+<div class="modal fade" id="ProAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Add a new project</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <form action="/proMGT/add_project/" method="post" class="form-inline" role="form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Region</label>
+                        <select name="Region">
+                            <option selected="selected">--请输入项目区域--</option>
+                            <option value="North">North</option>
+                            <option value="South">South</option>
+                            <option value="East&West">East&West</option>
+                            <option value="WuXi">WuXi</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Name"
+                                   placeholder="请输入项目名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Leader</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Leader"
+                                   placeholder="请输入项目负责人">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Cluster</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Cluster"
+                                   placeholder="请输入项目Cluster">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">BU</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="BU"
+                                   placeholder="请输入项目BU">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Plant</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Plant" id="Plant"
+                                   placeholder="请输入项目所在工厂">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Type</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Type"
+                                   placeholder="请输入项目类型">
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <label class="col-sm-2 control-label">Current stage</label>
+                        <select name="Curr_stage">
+                            <option selected="selected">--请选择项目目前所处stage--</option>
+                            <option value="Open">Open</option>
+                            <option value="Deployment">Deployment</option>
+                            <option value="Do">Do</option>
+                            <option value="Close">Close</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">COGS(MRMB)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="COGS"
+                                   placeholder="请输入项目Additonal COGS">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">PROD(KRMB)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="PROD"
+                                   placeholder="请输入项目的saving">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">CAPEX(KRMB)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="CAPEX"
+                                   placeholder="请输入项目的投资">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Space(SQM)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="Space"
+                                   placeholder="请输入项目所需的Space">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <input type="submit" class="btn btn-primary">
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="ProEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit your project!</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <form action="/proMGT/edit_project/" method="post" id="edit_project" class="form-inline" >
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Region</label>
+                        <select name="Region" id="updated_Region">
+                            <option selected="selected">--请输入项目区域--</option>
+                            <option value="North">North</option>
+                            <option value="South">South</option>
+                            <option value="East&West">East&West</option>
+                            <option value="WuXi">WuXi</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Name" id="updated_Name"
+                                   placeholder="请输入项目名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Leader</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Leader" id="updated_Leader"
+                                   placeholder="请输入项目负责人">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Cluster</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Cluster" id="updated_Cluster"
+                                   placeholder="请输入项目Cluster">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">BU</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="BU" id="updated_BU"
+                                   placeholder="请输入项目BU">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Plant</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Plant" id="updated_Plant"
+                                   placeholder="请输入项目所在工厂">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Type</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Type" id="updated_Type"
+                                   placeholder="请输入项目类型">
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <label class="col-sm-2 control-label">Current stage</label>
+                        <select name="Curr_stage" id="updated_Curr_stage">
+                            <option selected="selected">--请选择项目目前所处stage--</option>
+                            <option value="Open">Open</option>
+                            <option value="Deployment">Deployment</option>
+                            <option value="Do">Do</option>
+                            <option value="Close">Close</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">COGS(MRMB)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="COGS" id="updated_COGS"
+                                   placeholder="请输入项目Additonal COGS">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">PROD(KRMB)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="PROD" id="updated_PROD"
+                                   placeholder="请输入项目的saving">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">CAPEX(KRMB)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="CAPEX" id="updated_CAPEX"
+                                   placeholder="请输入项目的投资">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Space(SQM)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" name="Space" id="updated_Space"
+                                   placeholder="请输入项目所需的Space">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <input type="submit" id="edit_submit" class="btn btn-primary">
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!--<script>-->
+<!--    $(function() {-->
+<!--        $('#edit_submit').submit(function () {-->
+<!--            var updated_Region = $("#updated_Region").val();-->
+<!--            var updated_Name = $("#updated_Name").val();-->
+<!--            var updated_Leader = $("#updated_Leader").val();-->
+<!--            var updated_Cluster = $("#updated_Cluster").val();-->
+<!--            var updated_BU = $("#updated_BU").val();-->
+<!--            var updated_Plant = $("#updated_Plant").val();-->
+<!--            var updated_Type = $("#updated_Type").val();-->
+<!--            var updated_Curr_stage = $("#updated_Curr_stage").val();-->
+<!--            var updated_COGS = $("#updated_COGS").val();-->
+<!--            var updated_PROD = $("#updated_PROD").val();-->
+<!--            var updated_CAPEX = $("#updated_CAPEX").val();-->
+<!--            var updated_Space = $("#updated_Space").val();-->
+
+
+<!--            $.ajax({-->
+<!--                type: "POST",-->
+<!--                data: {-->
+<!--                    Region: updated_Region,-->
+<!--                    Name: updated_Name,-->
+<!--                    Leader: updated_Leader,-->
+<!--                    Cluster: updated_Cluster,-->
+<!--                    BU: updated_BU,-->
+<!--                    Plant: updated_Plant,-->
+<!--                    Type: updated_Type,-->
+<!--                    Curr_stage: updated_Curr_stage,-->
+<!--                    COGS: updated_COGS,-->
+<!--                    PROD: updated_PROD,-->
+<!--                    CAPEX: updated_CAPEX,-->
+<!--                    Space: updated_Space-->
+<!--                },-->
+<!--                url: "/ProMGT/edit_project/",-->
+<!--                cache: false,-->
+<!--                dataType: "html",-->
+<!--                success: function (result, statues, xml) {-->
+<!--                    alert("修改成功");                                         //成功时弹出view传回来的结果-->
+<!--                },-->
+<!--                error: function () {-->
+<!--                    alert("false");-->
+<!--                }-->
+<!--            });-->
+<!--            return false;-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->

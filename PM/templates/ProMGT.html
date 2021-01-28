@@ -1,0 +1,240 @@
+{%extends 'PM_index.html'%}
+{%load static%}
+{% block content %}
+
+<!-- Project DataTale -->
+<div class="card shadow mb-4 mt-1">
+    <!-- 卡片的主体部分-->
+    <div class="card-body">
+        <div class="table-responsive">
+            <div class="columns columns-right btn-group pull-left">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ProAddModal">新增项目
+                </button>
+            </div>
+            <table id="table" data-toggle="table" data-search="true" data-show-refresh="true"
+                   data-show-toggle="true"
+                   data-show-fullscreen="true"
+                   data-show-columns="true"
+                   data-show-columns-toggle-all="true"
+                   data-show-export="true"
+                   data-click-to-select="true"
+                   data-minimum-count-columns="2"
+                   data-show-pagination-switch="true"
+                   data-pagination="true"
+
+                   data-page-list="[10, 25, 50, 100, all]"
+                   data-show-footer="true"
+
+                   data-response-handler="responseHandler">
+                <thead>
+                <tr>
+                    <th data-field="operate"></th>
+                    <th data-sortable="true" data-field="Region">Region</th>
+                    <th data-field="Name">Name</th>
+                    <th data-sortable="true" data-field="Leader">Leader</th>
+                    <th data-sortable="true" data-field="Cluster">Cluster</th>
+                    <th data-sortable="true" data-field="Plant">Plant</th>
+                    <th data-sortable="true" data-field="BU">BU</th>
+                    <th data-sortable="true" data-field="Lob">Lob</th>
+                    <th data-sortable="true" data-field="Type">Type</th>
+                    <!--                        <th>Code</th>-->
+                    <th data-sortable="true" data-field="COGS">COGS</th>
+                    <th data-sortable="true" data-field="PROD">PROD</th>
+                    <th data-sortable="true" data-field="CAPEX">CAPEX</th>
+                    <th data-sortable="true" data-field="Curr_stage">Curr_stage</th>
+                    <th data-sortable="true" data-field="Space">Space</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td></td>
+                    <td>{{project.Region}}</td>
+                    <td>{{project.Project_name}}</td>
+                    <td>{{project.Project_leader}}</td>
+                    <td>{{project.Cluster}}</td>
+                    <td>{{project.Plant}}</td>
+                    <td>{{project.BU}}</td>
+                    <td>{{project.Lob}}</td>
+                    <td>{{project.Project_type}}</td>
+                    <!--                        <td>{{project.Project_code}}</td>-->
+                    <td>{{project.Additional_COGS}}</td>
+                    <td>{{project.Productivity}}</td>
+                    <td>{{project.CAPEX}}</td>
+                    <td>{{project.Current_status}}</td>
+                    <td>{{project.Space_needed}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% include 'ProMGT_Modal.html' %}
+
+{% endblock %}
+
+{% block css %}
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="{%static 'bootstrap-table.css'%}">
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+{% endblock %}
+
+
+{% block js %}
+
+<!-- Page level plugins -->
+<script src="{% static 'bootstrap-table.min.js'%}"></script>
+<!--<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/locale/bootstrap-table-zh-CN.min.js"></script>-->
+
+<script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table-locale-all.min.js"></script>
+<script>
+    var $table = $('#table')
+    var $remove = $('#remove')
+    var selections = []
+
+    function getIdSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.id
+        })
+    }
+
+    function responseHandler(res) {
+        $.each(res.rows, function (i, row) {
+            row.state = $.inArray(row.id, selections) !== -1
+        })
+        return res
+    }
+
+    function detailFormatter(index, row) {
+        var html = []
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+        })
+        return html.join('')
+    }
+
+    function operateFormatter(value, row, index) {
+        return [
+            '<a class="like" href="javascript:void(0)" title="Like">',
+            '<i class="fa fa-pencil"></i>',
+            '</a>  ',
+            '<a class="remove" href="javascript:void(0)" title="Remove">',
+            '<i class="fa fa-trash"></i>',
+            '</a>'
+        ].join('')
+    }
+
+    window.operateEvents = {
+        'click .like': function (e, value, row, index) {
+            // alert('You click like action, row: ' + JSON.stringify(row))
+            $("#updated_Region").val(row.Region);
+            $("#updated_Name").val(row.Name);
+            $("#updated_Leader").val(row.Leader);
+            $("#updated_Cluster").val(row.Cluster);
+            $("#updated_BU").val(row.BU);
+            $("#updated_Plant").val(row.Plant);
+            $("#updated_Type").val(row.Type);
+            $("#updated_Curr_stage").val(row.Curr_stage);
+            $("#updated_COGS").val(row.COGS);
+            $("#updated_PROD").val(row.PROD);
+            $("#updated_CAPEX").val(row.CAPEX);
+            $("#updated_Space").val(row.Space);
+            $('#ProEditModal').modal('show')
+
+            // alert("index"+index);
+        },
+        'click .remove': function (e, value, row, index) {
+            $table.bootstrapTable('remove', {
+                field: 'Name',
+                values: [row.Name]
+            });
+            $.ajax({
+                url: "delete_project/",
+                type: 'POST',
+// 　　　　　　不加这个，ajax会将结果后边加个[]，例如{'vals[]':[4,6,8]}
+                traditional: true,
+// 　　　　　    不加这个，会报服务器终止了一个在运行的程序
+                async: false,
+                data: {
+                    'Name': row.Name
+                },
+                success: function () {
+                    alert("删除成功");
+                },
+                error: function () {
+                    alert("删除失败");
+                }
+            })
+        }
+    }
+
+    function totalPriceFormatter(data) {
+        var field = this.field
+        return '$' + data.map(function (row) {
+            return +row[field].substring(1)
+        }).reduce(function (sum, i) {
+            return sum + i
+        }, 0)
+    }
+
+    function initTable() {
+        $table.bootstrapTable('destroy').bootstrapTable({
+            height: 550,
+            locale: $('#locale').val(),
+            columns: [
+                // {
+                //     field: 'state',
+                //     checkbox: true,
+                //     rowspan: 2,
+                //     align: 'center',
+                //     valign: 'middle'
+                // },
+                {
+                    field: 'operate',
+                    title: 'Item Operate',
+                    align: 'center',
+                    clickToSelect: false,
+                    events: window.operateEvents,
+                    formatter: operateFormatter
+                },
+            ],
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 20, 50, 100],
+        })
+        $table.on('check.bs.table uncheck.bs.table ' +
+            'check-all.bs.table uncheck-all.bs.table',
+            function () {
+                $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
+
+                // save your data, here just save the current page
+                selections = getIdSelections()
+                // push or splice the selections if you want to save all data selections
+            })
+        $table.on('all.bs.table', function (e, name, args) {
+            console.log(name, args)
+        })
+        $remove.click(function () {
+            var ids = getIdSelections()
+            $table.bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            })
+            $remove.prop('disabled', true)
+        })
+    }
+
+    $(function () {
+        initTable()
+
+        $('#locale').change(initTable)
+    })
+</script>
+
+
+{% endblock%}
