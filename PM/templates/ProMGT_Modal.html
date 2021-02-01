@@ -123,9 +123,10 @@
                 <h4 class="modal-title">Edit your project!</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
-            <form action="/proMGT/edit_project/" method="post" id="edit_project" class="form-inline" >
+            <form id="edit_project" class="form-inline" >
                 {% csrf_token %}
                 <div class="modal-body">
+
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Region</label>
                         <select name="Region" id="updated_Region">
@@ -224,58 +225,11 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <input type="submit" id="edit_submit" class="btn btn-primary">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="edit_submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>
 
-<!--<script>-->
-<!--    $(function() {-->
-<!--        $('#edit_submit').submit(function () {-->
-<!--            var updated_Region = $("#updated_Region").val();-->
-<!--            var updated_Name = $("#updated_Name").val();-->
-<!--            var updated_Leader = $("#updated_Leader").val();-->
-<!--            var updated_Cluster = $("#updated_Cluster").val();-->
-<!--            var updated_BU = $("#updated_BU").val();-->
-<!--            var updated_Plant = $("#updated_Plant").val();-->
-<!--            var updated_Type = $("#updated_Type").val();-->
-<!--            var updated_Curr_stage = $("#updated_Curr_stage").val();-->
-<!--            var updated_COGS = $("#updated_COGS").val();-->
-<!--            var updated_PROD = $("#updated_PROD").val();-->
-<!--            var updated_CAPEX = $("#updated_CAPEX").val();-->
-<!--            var updated_Space = $("#updated_Space").val();-->
-
-
-<!--            $.ajax({-->
-<!--                type: "POST",-->
-<!--                data: {-->
-<!--                    Region: updated_Region,-->
-<!--                    Name: updated_Name,-->
-<!--                    Leader: updated_Leader,-->
-<!--                    Cluster: updated_Cluster,-->
-<!--                    BU: updated_BU,-->
-<!--                    Plant: updated_Plant,-->
-<!--                    Type: updated_Type,-->
-<!--                    Curr_stage: updated_Curr_stage,-->
-<!--                    COGS: updated_COGS,-->
-<!--                    PROD: updated_PROD,-->
-<!--                    CAPEX: updated_CAPEX,-->
-<!--                    Space: updated_Space-->
-<!--                },-->
-<!--                url: "/ProMGT/edit_project/",-->
-<!--                cache: false,-->
-<!--                dataType: "html",-->
-<!--                success: function (result, statues, xml) {-->
-<!--                    alert("修改成功");                                         //成功时弹出view传回来的结果-->
-<!--                },-->
-<!--                error: function () {-->
-<!--                    alert("false");-->
-<!--                }-->
-<!--            });-->
-<!--            return false;-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->

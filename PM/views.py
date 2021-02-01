@@ -2,8 +2,9 @@ from django.shortcuts import render
 from PM import models
 from django.db.models import Sum
 from django.db.models import Count
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from PM.models import Project
+import json
 
 
 def project_dashboard(request):
@@ -97,6 +98,7 @@ def project_delete(request):
 def project_edit(request):
     # 先判断发过来的是否是post请求
     if request.method == "POST":
+        ID = request.POST.get("ID", None)
         Region = request.POST.get("Region", None)
         project_name = request.POST.get("Name", None)
         leader = request.POST.get("Leader", None)
@@ -109,8 +111,8 @@ def project_edit(request):
         PROD = request.POST.get("PROD", None)
         CAPEX = request.POST.get("CAPEX", None)
         Space = request.POST.get("Space", None)
-        print("要修改的项目名称是", Space)
-        book_obj = Project.objects.get(Project_name=project_name)
+        print("要修改的项目名称是", ID, "Region", Region)
+        book_obj = Project.objects.get(id=ID)
         book_obj.Region = Region
         book_obj.Project_leader = leader
         book_obj.Cluster = cluster
@@ -123,7 +125,9 @@ def project_edit(request):
         book_obj.CAPEX = CAPEX
         book_obj.Space_needed = Space
         book_obj.save()
-    return HttpResponseRedirect('/proMGT')
+        a={'a':1}
+        a= json.dumps(a)
+    return JsonResponse(a,safe=False)
 
 # 增加项目
 def project_add(request):

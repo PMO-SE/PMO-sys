@@ -92,23 +92,23 @@
           show: true,
           position: 'inside'
         },
-        // markLine:{
-        //   symbol:'none',
-        //   data:[{
-        //     name: 'HC',
-        //     xAxis: 21,
-        //
-        //   }],
-        //   color: '#FFFFFF',
-        //   label:{
-        //     show: true,
-        //     position: 'middle',
-        //     textStyle:{
-        //       color:'#FFFFFF'
-        //     },
-        //     formatter: '{b}: {c}',
-        //   },
-        // }
+        markLine:{
+          symbol:'none',
+          data:[{
+            name: 'HC',
+            xAxis: 21,
+
+          }],
+          color: '#FFFFFF',
+          label:{
+            show: true,
+            position: 'middle',
+            textStyle:{
+              color:'#FFFFFF'
+            },
+            formatter: '{b}: {c}',
+          },
+        }
       }
     ]
   };

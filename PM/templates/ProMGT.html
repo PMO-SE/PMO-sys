@@ -1,5 +1,5 @@
-{%extends 'PM_index.html'%}
-{%load static%}
+{% extends 'PM_index.html' %}
+{% load static %}
 {% block content %}
 
 <!-- Project DataTale -->
@@ -13,62 +13,13 @@
             </div>
             <table id="table" data-toggle="table" data-search="true" data-show-refresh="true"
                    data-show-toggle="true"
-                   data-show-fullscreen="true"
                    data-show-columns="true"
-                   data-show-columns-toggle-all="true"
                    data-show-export="true"
-                   data-click-to-select="true"
                    data-minimum-count-columns="2"
                    data-show-pagination-switch="true"
                    data-pagination="true"
-
-                   data-page-list="[10, 25, 50, 100, all]"
-                   data-show-footer="true"
-
                    data-response-handler="responseHandler">
-                <thead>
-                <tr>
-                    <th data-field="operate"></th>
-                    <th data-sortable="true" data-field="Region">Region</th>
-                    <th data-field="Name">Name</th>
-                    <th data-sortable="true" data-field="Leader">Leader</th>
-                    <th data-sortable="true" data-field="Cluster">Cluster</th>
-                    <th data-sortable="true" data-field="Plant">Plant</th>
-                    <th data-sortable="true" data-field="BU">BU</th>
-                    <th data-sortable="true" data-field="Lob">Lob</th>
-                    <th data-sortable="true" data-field="Type">Type</th>
-                    <!--                        <th>Code</th>-->
-                    <th data-sortable="true" data-field="COGS">COGS</th>
-                    <th data-sortable="true" data-field="PROD">PROD</th>
-                    <th data-sortable="true" data-field="CAPEX">CAPEX</th>
-                    <th data-sortable="true" data-field="Curr_stage">Curr_stage</th>
-                    <th data-sortable="true" data-field="Space">Space</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                {% for project in projects %}
-                <tr>
-                    <td></td>
-                    <td>{{project.Region}}</td>
-                    <td>{{project.Project_name}}</td>
-                    <td>{{project.Project_leader}}</td>
-                    <td>{{project.Cluster}}</td>
-                    <td>{{project.Plant}}</td>
-                    <td>{{project.BU}}</td>
-                    <td>{{project.Lob}}</td>
-                    <td>{{project.Project_type}}</td>
-                    <!--                        <td>{{project.Project_code}}</td>-->
-                    <td>{{project.Additional_COGS}}</td>
-                    <td>{{project.Productivity}}</td>
-                    <td>{{project.CAPEX}}</td>
-                    <td>{{project.Current_status}}</td>
-                    <td>{{project.Space_needed}}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
             </table>
-
         </div>
     </div>
 </div>
@@ -79,7 +30,7 @@
 
 {% block css %}
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="{%static 'bootstrap-table.css'%}">
+<link rel="stylesheet" href="{% static 'bootstrap-table.css' %}">
 <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 {% endblock %}
 
@@ -87,7 +38,7 @@
 {% block js %}
 
 <!-- Page level plugins -->
-<script src="{% static 'bootstrap-table.min.js'%}"></script>
+<script src="{% static 'bootstrap-table.min.js' %}"></script>
 <!--<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/locale/bootstrap-table-zh-CN.min.js"></script>-->
 
 <script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
@@ -120,7 +71,7 @@
 
     function operateFormatter(value, row, index) {
         return [
-            '<a class="like" href="javascript:void(0)" title="Like">',
+            '<a class="edit" href="javascript:void(0)" title="edit">',
             '<i class="fa fa-pencil"></i>',
             '</a>  ',
             '<a class="remove" href="javascript:void(0)" title="Remove">',
@@ -130,24 +81,78 @@
     }
 
     window.operateEvents = {
-        'click .like': function (e, value, row, index) {
-            // alert('You click like action, row: ' + JSON.stringify(row))
+        //修改项目内容
+        'click .edit': function (e, value, row, index) {
+            // alert('You click edit action, row: ' + JSON.stringify(row))
+            var edit_id = row.id;
             $("#updated_Region").val(row.Region);
-            $("#updated_Name").val(row.Name);
-            $("#updated_Leader").val(row.Leader);
+            $("#updated_Name").val(row.Project_name);
+            $("#updated_Leader").val(row.Project_leader);
             $("#updated_Cluster").val(row.Cluster);
             $("#updated_BU").val(row.BU);
             $("#updated_Plant").val(row.Plant);
-            $("#updated_Type").val(row.Type);
-            $("#updated_Curr_stage").val(row.Curr_stage);
-            $("#updated_COGS").val(row.COGS);
-            $("#updated_PROD").val(row.PROD);
+            $("#updated_Type").val(row.Project_type);
+            $("#updated_Curr_stage").val(row.Current_status);
+            $("#updated_COGS").val(row.Additional_COGS);
+            $("#updated_PROD").val(row.Productivity);
             $("#updated_CAPEX").val(row.CAPEX);
-            $("#updated_Space").val(row.Space);
+            $("#updated_Space").val(row.Space_needed);
             $('#ProEditModal').modal('show')
 
-            // alert("index"+index);
+            //提交项目修改
+            $('#edit_submit').click(function () {
+                var updated_Region = $("#updated_Region").val();
+                var updated_Name = $("#updated_Name").val();
+                var updated_Leader = $("#updated_Leader").val();
+                var updated_Cluster = $("#updated_Cluster").val();
+                var updated_BU = $("#updated_BU").val();
+                var updated_Plant = $("#updated_Plant").val();
+                var updated_Type = $("#updated_Type").val();
+                var updated_Curr_stage = $("#updated_Curr_stage").val();
+                var updated_COGS = $("#updated_COGS").val();
+                var updated_PROD = $("#updated_PROD").val();
+                var updated_CAPEX = $("#updated_CAPEX").val();
+                var updated_Space = $("#updated_Space").val();
+                // var data = $('#edit_project').serialize();
+                // var jsonData = DataDeal.formToJson(data);
+                // console.log(jsonData)
+
+                $.ajax({
+                    type: "POST",
+                    data: {
+                        ID: edit_id,
+                        Region: updated_Region,
+                        Name: updated_Name,
+                        Leader: updated_Leader,
+                        Cluster: updated_Cluster,
+                        BU: updated_BU,
+                        Plant: updated_Plant,
+                        Type: updated_Type,
+                        Curr_stage: updated_Curr_stage,
+                        COGS: updated_COGS,
+                        PROD: updated_PROD,
+                        CAPEX: updated_CAPEX,
+                        Space: updated_Space
+                    },
+                    url: "/ProMGT/edit_project/",
+                    // data: jsonData,
+                    cache: false,
+                    // contentType: "application/json; charset=utf-8",
+                    success: function (result, statues, xml) {
+                        alert("修改成功");                                         //成功时弹出view传回来的结果
+                    },
+                    error: function () {
+                        alert("修改失败");
+                        alert(edit_id);
+
+                    }
+                });
+                return false;
+            });
+            $('#ProEditModal').modal('hide')
         },
+
+        //删除项目
         'click .remove': function (e, value, row, index) {
             $table.bootstrapTable('remove', {
                 field: 'Name',
@@ -156,9 +161,7 @@
             $.ajax({
                 url: "delete_project/",
                 type: 'POST',
-// 　　　　　　不加这个，ajax会将结果后边加个[]，例如{'vals[]':[4,6,8]}
                 traditional: true,
-// 　　　　　    不加这个，会报服务器终止了一个在运行的程序
                 async: false,
                 data: {
                     'Name': row.Name
@@ -173,27 +176,103 @@
         }
     }
 
-    function totalPriceFormatter(data) {
-        var field = this.field
-        return '$' + data.map(function (row) {
-            return +row[field].substring(1)
-        }).reduce(function (sum, i) {
-            return sum + i
-        }, 0)
-    }
-
     function initTable() {
         $table.bootstrapTable('destroy').bootstrapTable({
+            url: '/ProMGT/projects/',
+            method: 'GET',
             height: 550,
             locale: $('#locale').val(),
             columns: [
-                // {
-                //     field: 'state',
-                //     checkbox: true,
-                //     rowspan: 2,
-                //     align: 'center',
-                //     valign: 'middle'
-                // },
+                {
+                    title: 'Item ID',
+                    field: 'id',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    title: 'Region',
+                    field: 'Region',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Project_name',
+                    title: 'Name',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Project_leader',
+                    title: 'Leader',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Cluster',
+                    title: 'Cluster',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'BU',
+                    title: 'BU',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Lob',
+                    title: 'Lob',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Plant',
+                    title: 'Plant',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Current_status',
+                    title: 'Current stage',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Project_type',
+                    title: 'Type',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Project_code',
+                    title: 'Code',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Additional_COGS',
+                    title: 'COGS',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Productivity',
+                    title: 'Productivity',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'CAPEX',
+                    title: 'CAPEX',
+                    align: 'center',
+                    sortable: true,
+                },
+                {
+                    field: 'Space_needed',
+                    title: 'Space',
+                    align: 'center',
+                    sortable: true,
+                },
                 {
                     field: 'operate',
                     title: 'Item Operate',
@@ -201,7 +280,7 @@
                     clickToSelect: false,
                     events: window.operateEvents,
                     formatter: operateFormatter
-                },
+                }
             ],
             pageNumber: 1,
             pageSize: 10,
@@ -216,9 +295,9 @@
                 selections = getIdSelections()
                 // push or splice the selections if you want to save all data selections
             })
-        $table.on('all.bs.table', function (e, name, args) {
-            console.log(name, args)
-        })
+        // $table.on('all.bs.table', function (e, name, args) {
+        //     console.log(name, args)
+        // })
         $remove.click(function () {
             var ids = getIdSelections()
             $table.bootstrapTable('remove', {
@@ -229,12 +308,27 @@
         })
     }
 
+    //初始化表格
     $(function () {
         initTable()
 
         $('#locale').change(initTable)
     })
+
+    $.ajaxSetup({
+        contentType: "application/x-www-form-urlencoded; charset=utf-8"
+    });
+    var DataDeal = {
+        //将从form中通过$('#form').serialize()获取的值转成json
+        formToJson: function (data) {
+            data = data.replace(/&/g, "\",\"");
+            data = data.replace(/=/g, "\":\"");
+            data = "{\"" + data + "\"}";
+            return data;
+        },
+    };
+
+
 </script>
 
-
-{% endblock%}
+{% endblock %}
