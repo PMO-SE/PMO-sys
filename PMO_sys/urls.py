@@ -21,10 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('project_dashboard', PM_views.project_dashboard, name='project_dashboard'),
     path('homepage/', PM_views.homepage, name='homepage'),
-    path('ProMGT/', PM_views.proMGT, name='proMGT'),
+    # 应用PM中的路由
+    path('ProMGT/', include('PM.urls')),
     path('project_card/', PM_views.project_card, name='project_card'),
-    path('ProMGT/delete_project/', PM_views.project_delete),
-    path('ProMGT/edit_project/', PM_views.project_edit),
-    path('ProMGT/add_project/', PM_views.project_add),
-    path('ProMGT/', include('PM.urls'))
+
 ]

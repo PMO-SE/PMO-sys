@@ -151,7 +151,7 @@ class Project(models.Model):
         ('East&West', 'East&West'),
         ('WuXi', 'WuXi'),
     )
-
+    id = models.IntegerField(primary_key=True, auto_created=True)
     Region = models.CharField(max_length=30, choices=Region_category, null=False, default='No region')
     Project_name = models.TextField(max_length=100)
     Project_leader = models.CharField(max_length=30, choices=Name_category, blank=True, null=True)

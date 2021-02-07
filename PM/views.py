@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from PM import models
 from django.db.models import Sum
 from django.db.models import Count
@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from PM.models import Project
 import json
 
-
+#Project Dashboard入口
 def project_dashboard(request):
     projects = models.Project.objects.all()
     project_num = projects.count()
@@ -68,7 +68,6 @@ def project_dashboard(request):
     # print(COGS_by_BU)
     return render(request, 'project_dashboard-dark.html', locals())
 
-
 def homepage(request):
     return render(request, 'Homepage.html')
 
@@ -77,22 +76,16 @@ def proMGT(request):
     projects = models.Project.objects.all()
     return render(request, 'ProMGT.html', locals())
 
-
-def project_card(request):
-    projects = models.Project.objects.all()
-    return render(request, 'project_card.html', locals())
-
-
 # 删除项目
 def project_delete(request):
     # 先判断发过来的是否是post请求
     if request.method == "POST":
         # 得到要删除的id列表
-        project_name = request.POST.get("Name", None)
-        book_obj = Project.objects.get(Project_name=project_name)
-        book_obj.delete()
+        id = request.POST.get("id", None)
+        project_obj = Project.objects.get(id=id)
+        project_obj.delete()
     # 删除成功返回显示页
-    pass
+    return HttpResponse("balabala")
 
 # 修改项目
 def project_edit(request):
@@ -151,3 +144,8 @@ def project_add(request):
         obj.save()
     projects = models.Project.objects.all()
     return render(request, 'ProMGT.html', locals())
+
+
+def project_card(request):
+    projects = models.Project.objects.all()
+    return render(request, 'project_card.html', locals())

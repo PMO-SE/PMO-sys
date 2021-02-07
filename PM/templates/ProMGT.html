@@ -1,7 +1,7 @@
 {% extends 'PM_index.html' %}
 {% load static %}
-{% block content %}
 
+{% block content %}
 <!-- Project DataTale -->
 <div class="card shadow mb-4 mt-1">
     <!-- 卡片的主体部分-->
@@ -25,8 +25,8 @@
 </div>
 
 {% include 'ProMGT_Modal.html' %}
-
 {% endblock %}
+
 
 {% block css %}
 <!-- Latest compiled and minified CSS -->
@@ -76,7 +76,10 @@
             '</a>  ',
             '<a class="remove" href="javascript:void(0)" title="Remove">',
             '<i class="fa fa-trash"></i>',
-            '</a>'
+            '</a>  ',
+            '<a class="project_card" href="javascript:void(0)" title="project_card">',
+            '<i class="fa fa-search"></i>',
+            '</a> '
         ].join('')
     }
 
@@ -139,7 +142,9 @@
                     cache: false,
                     // contentType: "application/json; charset=utf-8",
                     success: function (result, statues, xml) {
-                        alert("修改成功");                                         //成功时弹出view传回来的结果
+                        alert("修改成功");
+                        $('#ProEditModal').modal('hide');
+                        $table.bootstrapTable('refresh');
                     },
                     error: function () {
                         alert("修改失败");
@@ -149,22 +154,22 @@
                 });
                 return false;
             });
-            $('#ProEditModal').modal('hide')
+
         },
 
         //删除项目
         'click .remove': function (e, value, row, index) {
             $table.bootstrapTable('remove', {
-                field: 'Name',
-                values: [row.Name]
+                field: 'id',
+                values: [row.id]
             });
             $.ajax({
-                url: "delete_project/",
+                url: "/ProMGT/delete_project/",
                 type: 'POST',
                 traditional: true,
                 async: false,
                 data: {
-                    'Name': row.Name
+                    'id': row.id
                 },
                 success: function () {
                     alert("删除成功");
@@ -173,6 +178,11 @@
                     alert("删除失败");
                 }
             })
+        },
+
+        //查看project card
+        'click .project_card': function (e, value, row, index) {
+            window.open('/project_card');
         }
     }
 
@@ -315,18 +325,6 @@
         $('#locale').change(initTable)
     })
 
-    $.ajaxSetup({
-        contentType: "application/x-www-form-urlencoded; charset=utf-8"
-    });
-    var DataDeal = {
-        //将从form中通过$('#form').serialize()获取的值转成json
-        formToJson: function (data) {
-            data = data.replace(/&/g, "\",\"");
-            data = data.replace(/=/g, "\":\"");
-            data = "{\"" + data + "\"}";
-            return data;
-        },
-    };
 
 
 </script>
