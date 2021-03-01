@@ -7,12 +7,14 @@
     .col-lg-6.mb-4 {
         margin: 0px 0px 5px !important;
         padding: 0px 5px;
-        height: 80% !important;
+    }
+
+    .card.shadow.mb-4 {
+        margin-bottom: 0.5rem !important;
     }
 
     .card-header.py-3 {
         padding: 10px 20px !important;
-
     }
 
     .card_title {
@@ -29,19 +31,13 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse">
-        <a class="navbar-brand" id="se_logo" href={% url 'homepage' %}><img src="{% static 'img/logo.png' %}" alt="PMO"
-                                                                            style="max-width:180px;margin-top:0px;"/></a>
-        <h1 class="card_title">PEP/OCP&lt;PEPXXX&gt;/project name/Cluster/Plant</h1>
+        <a class="navbar-brand" href={% url 'homepage' %}><img src="{% static 'img/logo.png' %}" alt="PMO"
+                                                               style="max-width:180px;margin-top:0px;"/></a>
+        <h1 class="card_title">{{project.Project_type}} / {{project.Cluster}} / {{project.Plant}}</h1>
     </div>
 </nav>
-
 <!-- css -->
 <link href="{% static 'bootstrap4/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-<style>
-    #se_logo {
-        float: right !important;
-    }
-</style>
 
 {% endblock %}
 
@@ -76,13 +72,26 @@
 
         <!-- Project KPIs -->
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Project KPIs</h6>
+                <div class="dropdown no-arrow">
+                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                         aria-labelledby="dropdownMenuLink">
+                        <div class="dropdown-header">Dropdown Header:</div>
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
-
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-lg-3 mb-2">
                         <div class="card bg-primary text-white shadow">
                             <div class="card-body">
                                 COGS
@@ -90,8 +99,55 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-lg-3 mb-2">
+                        <div class="card bg-primary text-white shadow">
+                            <div class="card-body">
+                                COGS
+                                <div class="text-white-50 small">100k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                Productivity
+                                <div class="text-white-50 small">500k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                Productivity
+                                <div class="text-white-50 small">500k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                Productivity
+                                <div class="text-white-50 small">500k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                Productivity
+                                <div class="text-white-50 small">500k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-2">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                Productivity
+                                <div class="text-white-50 small">500k</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-2">
                         <div class="card bg-success text-white shadow">
                             <div class="card-body">
                                 Productivity
@@ -125,30 +181,7 @@
                     <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
                          aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <h4 class="small font-weight-bold">Sales Tracking <span
-                        class="float-right">40%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                         aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold">Customer Database <span
-                        class="float-right">60%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar" role="progressbar" style="width: 60%"
-                         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold">Payout Details <span
-                        class="float-right">80%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                         aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <h4 class="small font-weight-bold">Account Setup <span
-                        class="float-right">Complete!</span></h4>
-                <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
+
             </div>
         </div>
         <!-- Schedule -->
@@ -165,6 +198,7 @@
             </div>
         </div>
 
+
     </div>
 
     <div class="col-lg-6 mb-4">
@@ -174,20 +208,27 @@
                 <h6 class="m-0 font-weight-bold text-primary">Project Actions</h6>
             </div>
             <div class="card-body">
-                <div class="text-center">
-                    <!--                    <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"-->
-                    <!--                         src="img/undraw_posting_photo.svg" alt="">-->
-                </div>
-                <p>Add some quality, svg illustrations to your project courtesy of <a
-                        target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                    constantly updated collection of beautiful svg images that you can use
-                    completely free and without attribution!</p>
-
+                <br>Add some quality, svg illustrations to your project courtesy of <a
+                    target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
+                constantly updated collection of beautiful svg images that you can use
+                completely free and without attribution!
+                Add some quality, svg illustrations to your project courtesy of, a
+                constantly updated collection of beautiful svg images that you can use
+                completely free and without attribution!</br>
+                Add some quality, svg illustrations to your project courtesy of, a
+                constantly updated collection of beautiful svg images that you can use
+                completely free and without attribution!</p>
+                <!--                <form action="/ProMGT/projects/" method="POST">-->
+                <!--                    {% csrf_token %}-->
+                <!--                    {% render_form serializer %}-->
+                <!--                    <input type="submit" value="Save">-->
+                <!--                </form>-->
 
                 <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
                     unDraw &rarr;</a>
             </div>
         </div>
+
 
     </div>
 </div>
@@ -196,7 +237,7 @@
 
 {% block js %}
 <script>
-    console.log("我丢你楼某！")
+
 
 </script>
 {% endblock %}

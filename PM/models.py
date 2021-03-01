@@ -1,4 +1,5 @@
 from django.db import models
+from rest_framework import reverse
 
 
 class Project(models.Model):
@@ -33,11 +34,13 @@ class Project(models.Model):
         ('YuE-Peggy Zhu', 'YuE-Peggy Zhu'),
         ('ZHANG Chunxin', 'ZHANG Chunxin'),
         ('ZHANG Na', 'ZHANG Na'),
+        ('Songyang XU', 'Songyang XU'),
         ('NA', 'NA')
     )
 
     Cluster_category = (
         ('MTS-MTO', 'MTS-MTO'),
+        ('MTOMTS', 'MTOMTS'),
         ('MTO-CTO', 'MTO-CTO'),
         ('MTS-CTO', 'MTS-CTO'),
         ('ETO-MV', 'ETO-MV'),
@@ -139,11 +142,11 @@ class Project(models.Model):
     )
 
     Status_category = (
-        ('Closed', 'Closed'),
-        ('Feasibility Study', 'Feasibility Study'),
-        ('Ongoing', 'Ongoing')
+        ('Open', 'Open'),
+        ('Deployment', 'Deployment'),
+        ('Produce', 'Produce'),
+        ('Closed', 'Closed')
     )
-
 
     Region_category = (
         ('North', 'North'),
@@ -191,7 +194,8 @@ class Workload(models.Model):
         ('1.0', '1.0')
     )
 
-    ID = models.ForeignKey("Project", on_delete=models.CASCADE)
+    id = models.IntegerField(primary_key=True, auto_created=True)
+    # Project_ID = models.ForeignKey("Project", on_delete=models.CASCADE)
     Year = models.CharField(max_length=5, null=False)
     Quarter = models.CharField(max_length=10, choices=Quarter_category, null=False)
     Workload = models.FloatField(null=True, choices=Ratio_category)

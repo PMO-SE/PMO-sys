@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'PM',
     'rest_framework',
+    'login',
+    'roles',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +136,9 @@ STATICFILES_FINDER = (
     'django.contrib.staticfiles.finders.FilesystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
+ALLOWED_HOSTS = ['*']

@@ -116,17 +116,17 @@
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="ProEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="ProEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+     data-backdrop="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Edit your project!</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
-            <form id="edit_project" class="form-inline" >
-                {% csrf_token %}
-                <div class="modal-body">
 
+            <div class="modal-body">
+                <form id="edit_project">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Region</label>
                         <select name="Region" id="updated_Region">
@@ -222,13 +222,13 @@
                                    placeholder="请输入项目所需的Space">
                         </div>
                     </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="edit_submit" class="btn btn-primary">Submit</button>
+            </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" id="edit_submit" class="btn btn-primary">Submit</button>
-                </div>
-            </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
 </div>

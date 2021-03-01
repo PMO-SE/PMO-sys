@@ -84,7 +84,7 @@
         name: "Workload",
         type: "bar",
         barWidth: "35%",
-        data: a,
+        data: [33,32,25,20],
         itemStyle: {
           barBorderRadius: 5
         },

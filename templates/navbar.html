@@ -4,14 +4,14 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-    <a class="navbar-brand" href={% url 'homepage' %}><img src="{% static 'img/logo.png' %}" alt="PMO" style="max-width:180px;margin-top:0px;"/></a>
+    <a class="navbar-brand" href="{% url 'homepage' %}"><img src="{% static 'img/logo.png' %}" alt="PMO" style="max-width:180px;margin-top:0px;"/></a>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 		<li class="nav-item dropdown">
 			<a data-toggle="dropdown" class="dropdown-toggle nav-link">Projects<strong class="caret"></strong></a>
 			<ul class="dropdown-menu">
-				<li><a href={% url 'project_dashboard' %}>Project Dashboard</a></li>
+				<li><a href="{% url 'project_dashboard' %}">Project Dashboard</a></li>
+				<li><a href="{% url 'ProMGT' %}">Project Management</a></li>
 
-				<li><a href={% url 'proMGT' %}>Project Management</a></li>
 			</ul>
 		</li>
       <li class="nav-item">

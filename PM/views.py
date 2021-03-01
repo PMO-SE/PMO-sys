@@ -3,8 +3,12 @@ from PM import models
 from django.db.models import Sum
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
-from PM.models import Project
 import json
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404, redirect
+from rest_framework.response import Response
+from .models import Project, Workload
 
 #Project Dashboard入口
 def project_dashboard(request):
@@ -145,7 +149,47 @@ def project_add(request):
     projects = models.Project.objects.all()
     return render(request, 'ProMGT.html', locals())
 
+#为了project card而设定的
+# class ProjectDetail(APIView):
+#     renderer_classes = [TemplateHTMLRenderer]
+#     template_name = 'project_card.html'
+#
+#     def get(self, request, pk):
+#         project = get_object_or_404(Project, pk=pk)
+#         serializer = ProjectModelSerializer(project)
+#         return Response({"serializer": serializer, 'project': project})
+#
+#     def post(self, request, pk):
+#         project = get_object_or_404(Project, pk=pk)
+#         serializer = ProjectModelSerializer(project, data=request.data)
+#         if not serializer.is_valid():
+#             return Response({'serializer': serializer, 'project': project})
+#         serializer.save()
+#         return redirect('/ProMGT')
 
-def project_card(request):
-    projects = models.Project.objects.all()
-    return render(request, 'project_card.html', locals())
+#为了页面显示Workload而设定的
+# class WorkloadDetail(APIView):
+#     renderer_classes = [TemplateHTMLRenderer]
+#     template_name = 'workload_MGT.html'
+#
+#     def get(self, request, pk):
+#         workload = get_object_or_404(Workload, pk=pk)
+#         serializer = WorkloadModelSerializer(workload)
+#         return Response({"serializer": serializer, 'workload': workload})
+#
+#     def get(self, request):
+#         workload = Workload()
+#         serializer = WorkloadModelSerializer(workload)
+#         return Response({"serializer": serializer, 'workload': workload})
+#
+#     def post(self, request, pk):
+#         project = get_object_or_404(Project, pk=pk)
+#         serializer = ProjectModelSerializer(project, data=request.data)
+#         if not serializer.is_valid():
+#             return Response({'serializer': serializer, 'project': project})
+#         serializer.save()
+#         return redirect('/ProMGT')
+
+def workload_MGT(request):
+    # workloads = models.Workload.objects.all()
+    return render(request, 'workload_MGT.html', locals())

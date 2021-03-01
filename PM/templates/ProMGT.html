@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<!-- Project DataTale -->
+<!-- Project DataTable -->
 <div class="card shadow mb-4 mt-1">
     <!-- 卡片的主体部分-->
     <div class="card-body">
@@ -45,7 +45,6 @@
 <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table-locale-all.min.js"></script>
 <script>
     var $table = $('#table')
-    var $remove = $('#remove')
     var selections = []
 
     function getIdSelections() {
@@ -100,7 +99,7 @@
             $("#updated_PROD").val(row.Productivity);
             $("#updated_CAPEX").val(row.CAPEX);
             $("#updated_Space").val(row.Space_needed);
-            $('#ProEditModal').modal('show')
+            $('#ProEditModal').modal('show');
 
             //提交项目修改
             $('#edit_submit').click(function () {
@@ -149,7 +148,6 @@
                     error: function () {
                         alert("修改失败");
                         alert(edit_id);
-
                     }
                 });
                 return false;
@@ -182,15 +180,18 @@
 
         //查看project card
         'click .project_card': function (e, value, row, index) {
-            window.open('/project_card');
+            ID = row.id
+            window.open("/ProMGT/project_card/" + row.id + "/");
         }
     }
 
     function initTable() {
+        var t = window.devicePixelRatio   // 获取下载的缩放 125% -> 1.25    150% -> 1.5
+        document.body.style.zoom = 1 / t;
         $table.bootstrapTable('destroy').bootstrapTable({
-            url: '/ProMGT/projects/',
+            url: 'http://localhost:7000/dev-api/project/',
             method: 'GET',
-            height: 550,
+            height: 700,
             locale: $('#locale').val(),
             columns: [
                 {
@@ -283,14 +284,14 @@
                     align: 'center',
                     sortable: true,
                 },
-                {
-                    field: 'operate',
-                    title: 'Item Operate',
-                    align: 'center',
-                    clickToSelect: false,
-                    events: window.operateEvents,
-                    formatter: operateFormatter
-                }
+                // {
+                //     field: 'operate',
+                //     title: 'Item Operate',
+                //     align: 'center',
+                //     clickToSelect: false,
+                //     events: window.operateEvents,
+                //     formatter: operateFormatter
+                // }
             ],
             pageNumber: 1,
             pageSize: 10,
@@ -299,32 +300,18 @@
         $table.on('check.bs.table uncheck.bs.table ' +
             'check-all.bs.table uncheck-all.bs.table',
             function () {
-                $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
 
                 // save your data, here just save the current page
                 selections = getIdSelections()
                 // push or splice the selections if you want to save all data selections
             })
-        // $table.on('all.bs.table', function (e, name, args) {
-        //     console.log(name, args)
-        // })
-        $remove.click(function () {
-            var ids = getIdSelections()
-            $table.bootstrapTable('remove', {
-                field: 'id',
-                values: ids
-            })
-            $remove.prop('disabled', true)
-        })
     }
 
     //初始化表格
     $(function () {
         initTable()
-
         $('#locale').change(initTable)
     })
-
 
 
 </script>
