@@ -346,7 +346,7 @@ for(;i<len;i++){
       itemHeight: 10,
       textStyle: {
         color: "rgba(255,255,255,.5)",
-        fontSize: "12"
+        fontSize: 10
       }
     },
     tooltip: {
@@ -375,15 +375,15 @@ for(;i<len;i++){
         data: array,
         // 修饰饼形图文字相关的样式 label对象
         label: {
-          fontSize: 15,
+          fontSize: 12,
           formatter: "{b}:{d}%",
         },
         // 修饰引导线样式
         labelLine: {
           // 连接到图形的线长度
-          length: 10,
+          length: 5,
           // 连接到文字的线长度
-          length2: 10
+          length2: 5
         }
       }
     ]
@@ -423,7 +423,7 @@ for(;i<len;i++){
       itemHeight: 10,
       textStyle: {
         color: "rgba(255,255,255,.5)",
-        fontSize: "12"
+        fontSize: 10
       }
     },
     tooltip: {
@@ -443,7 +443,7 @@ for(;i<len;i++){
     ],
     series: [
       {
-        name: "Projects by BU",
+        name: "Projects by type",
         type: "pie",
         // 如果radius是百分比则必须加引号
         radius: ["10%", "70%"],
@@ -452,15 +452,15 @@ for(;i<len;i++){
         data: array,
         // 修饰饼形图文字相关的样式 label对象
         label: {
-          fontSize: 15,
+          fontSize: 12,
           formatter: "{b}:{d}%",
         },
         // 修饰引导线样式
         labelLine: {
           // 连接到图形的线长度
-          length: 10,
+          length: 5,
           // 连接到文字的线长度
-          length2: 10
+          length2: 5
         }
       }
     ]
@@ -475,7 +475,7 @@ for(;i<len;i++){
   });
 })();
 
-// Project Num by status
+// Project Num by stage
 (function() {
   // 1. 实例化对象
   var myChart = echarts.init(document.querySelector(".pie3  .chart"));
@@ -532,7 +532,7 @@ for(;i<len;i++){
         data: array,
         // 修饰饼形图文字相关的样式 label对象
         label: {
-          fontSize: 15,
+          fontSize: 12,
           formatter: "{b}:{d}%",
         },
         // 修饰引导线样式
@@ -612,7 +612,7 @@ for(;i<len;i++){
         data: array,
         // 修饰饼形图文字相关的样式 label对象
         label: {
-          fontSize: 15,
+          fontSize: 12,
           formatter: "{b}:{d}%",
         },
         // 修饰引导线样式
@@ -634,3 +634,4 @@ for(;i<len;i++){
     myChart.resize();
   });
 })();
+

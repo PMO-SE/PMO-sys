@@ -40,7 +40,6 @@ class Project(models.Model):
 
     Cluster_category = (
         ('MTS-MTO', 'MTS-MTO'),
-        ('MTOMTS', 'MTOMTS'),
         ('MTO-CTO', 'MTO-CTO'),
         ('MTS-CTO', 'MTS-CTO'),
         ('ETO-MV', 'ETO-MV'),
@@ -72,10 +71,10 @@ class Project(models.Model):
         ('Digital Energy', 'Digital Energy'),
         ('Home & Distribution', 'Home & Distribution'),
         ('Industrial & Automation', 'Industrial & Automation'),
-        ('Power Products', 'Power Products'),
-        ('Power System Primary', 'Power System Primary'),
+        ('PP', 'Power Products'),
+        ('PS', 'Power System Primary'),
         ('Power System Secondary', 'Power System Secondary'),
-        ('Secure Power', 'Secure Power'),
+        ('SP', 'Secure Power'),
         ('ALL', 'ALL'),
         ('NA', 'NA')
     )
@@ -105,6 +104,7 @@ class Project(models.Model):
         ('PTWDA', 'PTWDA'),
         ('SP3PH', 'SP3PH'),
         ('SPMDC', 'SPMDC'),
+        ('HDFDB', 'HDFDB'),
         ('ALL', 'ALL'),
         ('NA', 'NA')
     )
@@ -143,8 +143,10 @@ class Project(models.Model):
 
     Status_category = (
         ('Open', 'Open'),
-        ('Deployment', 'Deployment'),
+        ('Do', 'Do'),
+        ('IMP', 'IMP'),
         ('Produce', 'Produce'),
+        ('Sell', 'Sell'),
         ('Closed', 'Closed')
     )
 
@@ -154,22 +156,51 @@ class Project(models.Model):
         ('East&West', 'East&West'),
         ('WuXi', 'WuXi'),
     )
+
+    Complexity_category = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    )
+    # Basics
     id = models.IntegerField(primary_key=True, auto_created=True)
     Region = models.CharField(max_length=30, choices=Region_category, null=False, default='No region')
-    Project_name = models.TextField(max_length=100)
+    Project_name = models.CharField(max_length=100)
     Project_leader = models.CharField(max_length=30, choices=Name_category, blank=True, null=True)
-    Cluster = models.CharField(max_length=40, choices=Cluster_category, blank=True, null=True)
-    Plant = models.CharField(max_length=30, choices=Plant_category, blank=True, null=True)
-    BU = models.CharField(max_length=30, choices=BU_category, blank=True, null=True)
-    Lob = models.CharField(max_length=30, choices=Lob_category, blank=True, null=True)
     Project_type = models.CharField(max_length=30, choices=Type_category, blank=True, null=True)
     Project_code = models.CharField(max_length=30, choices=Code_category, blank=True, null=True)
+    Complexity = models.IntegerField(max_length=30, choices=Complexity_category, blank=True, null=True)
+    Comment = models.TextField(blank=True, null=True)
+
+    # 不应该出现的
+    Current_status = models.CharField(max_length=30, choices=Status_category, blank=True, null=True)
+
+    # Category
+    Cluster = models.CharField(max_length=40, choices=Cluster_category, blank=True, null=True)
+    BU = models.CharField(max_length=30, choices=BU_category, blank=True, null=True)
+    Lob = models.CharField(max_length=30, choices=Lob_category, blank=True, null=True)
+    Plant = models.CharField(max_length=30, choices=Plant_category, blank=True, null=True)
+
+    # KPI
     Additional_COGS = models.FloatField(max_length=10, blank=True, null=True)
     Productivity = models.FloatField(max_length=10, blank=True, null=True)
     CAPEX = models.FloatField(max_length=10, blank=True, null=True)
-    Current_status = models.CharField(max_length=30, choices=Status_category, blank=True, null=True)
     Space_needed = models.FloatField(max_length=10, blank=True, null=True)
+    Y_3_QTY = models.FloatField(max_length=10, blank=True, null=True)
+    Expense = models.FloatField(max_length=10, blank=True, null=True)
+    Payback = models.FloatField(max_length=10, blank=True, null=True)
+
+    # Schedule
+    Open_date = models.DateField(blank=True, null=True)
+    Do_date = models.DateField(blank=True, null=True)
+    IMP_date = models.DateField(blank=True, null=True)
     Produce_date = models.DateField(blank=True, null=True)
+    Sell_date = models.DateField(blank=True, null=True)
+    Close_date = models.DateField(blank=True, null=True)
+
+    # 创建信息
     Time_created = models.DateTimeField(auto_now_add=True)
 
 
@@ -195,8 +226,44 @@ class Workload(models.Model):
     )
 
     id = models.IntegerField(primary_key=True, auto_created=True)
-    # Project_ID = models.ForeignKey("Project", on_delete=models.CASCADE)
+    Project_ID = models.ForeignKey("Project", on_delete=models.CASCADE)
     Year = models.CharField(max_length=5, null=False)
     Quarter = models.CharField(max_length=10, choices=Quarter_category, null=False)
+    Leader = models.CharField(max_length=30, choices=Project.Name_category, blank=True, null=True)
     Workload = models.FloatField(null=True, choices=Ratio_category)
+
+
+class CardInfo(models.Model):
+    id = models.IntegerField(primary_key=True, auto_created=True)
+    Project_ID = models.ForeignKey("Project", on_delete=models.CASCADE)
+    Update = models.DateField(blank=True, null=True)
+    Summary = models.CharField(max_length=100, blank=True, null=True)
+    Picture = models.BinaryField(blank=True, null=True)
+
+    # KPI
+    Additional_COGS = models.FloatField(max_length=10, blank=True, null=True)
+    Productivity = models.FloatField(max_length=10, blank=True, null=True)
+    CAPEX = models.FloatField(max_length=10, blank=True, null=True)
+    Space_needed = models.FloatField(max_length=10, blank=True, null=True)
+    Y_3_QTY = models.FloatField(max_length=10, blank=True, null=True)
+    Expense = models.FloatField(max_length=10, blank=True, null=True)
+    Payback = models.FloatField(max_length=10, blank=True, null=True)
+
+    # Schedule
+    Open_date = models.DateField(blank=True, null=True)
+    Do_date = models.DateField(blank=True, null=True)
+    IMP_date = models.DateField(blank=True, null=True)
+    Produce_date = models.DateField(blank=True, null=True)
+    Sell_date = models.DateField(blank=True, null=True)
+    Close_date = models.DateField(blank=True, null=True)
+
+    # Risk & Action
+    Risk1 = models.CharField(max_length=100, blank=True, null=True)
+    Risk2 = models.CharField(max_length=100, blank=True, null=True)
+    Risk3 = models.CharField(max_length=100, blank=True, null=True)
+    Risk4 = models.CharField(max_length=100, blank=True, null=True)
+    Action1 = models.CharField(max_length=100, blank=True, null=True)
+    Action2 = models.CharField(max_length=100, blank=True, null=True)
+    Action3 = models.CharField(max_length=100, blank=True, null=True)
+    Action4 = models.CharField(max_length=100, blank=True, null=True)
 

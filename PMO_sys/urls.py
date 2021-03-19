@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from PM import views as PM_views
 from rest_framework.documentation import include_docs_urls
-from rest_framework.routers import DefaultRouter  # drf中的路由
 
 urlpatterns = [
     # -----------以下是前台使用的路由----------------------
@@ -27,14 +26,13 @@ urlpatterns = [
     path('ProMGT/', include('PM.urls')),  # 应用PM中的路由
     path('docs/', include_docs_urls(title='PMO sys API')),
     # ----------------以下是后台使用的路由------------------------
-    # path('dev-api/project/', include('PM.admin-urls')),  # PM模块路由
-    path('dev-api/project/', include('PM_admin.urls')),
-    path('dev-api/vue-element-admin/user/', include('login.urls')),  # 登录login模块路由
+    path('dev-api/', include('PM_admin.urls')),
+    path('dev-api/user/', include('login.urls')),  # 登录login模块路由
     path('dev-api/vue-element-admin/', include('roles.urls'))
 
 ]
-router = DefaultRouter()
+# router = DefaultRouter()
 # 前台路由
 # router.register('project', modelView.ProjectModelViewSet, basename='projects')
 # router.register('workloads', modelView.WorkloadModelViewSet, basename='workloads')
-urlpatterns += router.urls
+# urlpatterns += router.urls

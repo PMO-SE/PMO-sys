@@ -17,6 +17,7 @@ class loginView(APIView):
                 flag = 0
                 if user.identity == 'admin':
                     token = "admin-token"
+                    # token = obtain_jwt_token
                 elif user.identity == 'editor':
                     token = "editor-token"
                 elif user.identity == 'visitor':

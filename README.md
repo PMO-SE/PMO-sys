@@ -8,3 +8,4 @@
   * PM当中的template放置的是Projects下面具体应用页面
 * manage.py是启动文件
 * 项目目录的templates文件夹下放置的是homepage等全局页面
+
