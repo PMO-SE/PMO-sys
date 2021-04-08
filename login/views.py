@@ -1,67 +1,81 @@
+from django.contrib.auth.models import update_last_login
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from login import models
+from rest_framework_simplejwt.serializers import TokenObtainSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenViewBase
+
+class TokenRefreshSerializer(TokenRefreshSerializer):
+
+    def validate(self, attrs):
+        refresh = RefreshToken(attrs['refresh'])
+
+        data = {'access': str(refresh.access_token)}
+
+        if api_settings.ROTATE_REFRESH_TOKENS:
+            if api_settings.BLACKLIST_AFTER_ROTATION:
+                try:
+                    # Attempt to blacklist the given refresh token
+                    refresh.blacklist()
+                except AttributeError:
+                    # If blacklist app not installed, `blacklist` method will
+                    # not be present
+                    pass
+
+            refresh.set_jti()
+            refresh.set_exp()
+
+            data['refresh'] = str(refresh)
+
+        res = {
+            "code": 20000,
+            "data": data
+        }
+        return res
 
 
-# 实现接口/vue-element-admin/user/login 进行密码校验
-class loginView(APIView):
+class TokenObtainPairSerializer(TokenObtainSerializer):
+    @classmethod
+    def get_token(cls, user):
+        return RefreshToken.for_user(user)
 
-    def post(self, request, *args, **kwargs):
-        users = models.User.objects.all()
-        username = request.data.get("username")
-        password = request.data.get("password")
-        flag = 1
-        for user in users:
-            print(user.username, user.password)
-            if user.username == username and user.password == password:
-                flag = 0
-                if user.identity == 'admin':
-                    token = "admin-token"
-                    # token = obtain_jwt_token
-                elif user.identity == 'editor':
-                    token = "editor-token"
-                elif user.identity == 'visitor':
-                    token = "visitor-token"
-                elif user.identity == 'Tan':
-                    token = "Tan-token"
-                elif user.identity == 'Laura':
-                    token = "Laura-token"
-                elif user.identity == 'Eric':
-                    token = "Eric-token"
-                elif user.identity == 'Peggy':
-                    token = "Peggy-token"
-                else:
-                    token = "no-token"
-                response = {
-                    "code": 20000,
-                    "data": {"token": token}
-                }
-        if flag == 1:
-            response = {
-                "code": 60204,
-                "msg": "No such person"
-            }
-        return Response(response)
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        refresh = self.get_token(self.user)
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+        data['username'] = str(self.user.username)
+
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
+
+        res = {
+            "code": 20000,
+            "data": data
+        }
+        return res
+
+
+class TokenObtainPairView(TokenViewBase):
+    serializer_class = TokenObtainPairSerializer
+
+
+class TokenRefreshView(TokenViewBase):
+    serializer_class = TokenRefreshSerializer
 
 
 # 实现接口/vue-element-admin/user/info 进行用户信息和权限的设置
 class userInfoView(APIView):
     def get(self, request):
         token = request.query_params.get("token")
+        print('token', token.split())
         if token == "admin-token":
             roles = ["admin"]
-        elif token == "editor-token":
-            roles = ["editor"]
-        elif token == "Tan-token":
-            roles = ["admin"]
-        elif token == "Laura-token":
-            roles = ["editor"]
-        elif token == "Eric-token":
-            roles = ["editor"]
-        elif token == "Peggy-token":
-            roles = ["editor"]
         else:
-            roles = ["visitor"]
+            roles = ["editor"]
 
         response = {
             "code": 20000,
@@ -81,4 +95,3 @@ class logoutView(APIView):
             "data": "success"
         }
         return Response(response)
-

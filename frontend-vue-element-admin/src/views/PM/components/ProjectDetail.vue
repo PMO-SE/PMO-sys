@@ -1,32 +1,35 @@
 <template>
   <div class="createPost-container">
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
-
-      <sticky :z-index="10" :class-name="'sub-navbar '+postForm.status">
-        <p>
-          <template slot-scope="{row}">
-            <span class="link-type">{{ row.Project_name }}</span>
-          </template>
-        </p>
-        <CommentDropdown v-model="postForm.comment_disabled" />
-        <PlatformDropdown v-model="postForm.platforms" />
-        <SourceUrlDropdown v-model="postForm.source_uri" />
-        <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">
-          Publish
-        </el-button>
-        <el-button v-loading="loading" type="warning" @click="draftForm">
-          Draft
-        </el-button>
-      </sticky>
-
       <div class="createPost-main-container">
         <el-row>
-          <Notice />
-
+          <el-col :span="12">
+            <el-form-item label-width="120px" style="margin-right: 1rem" label="Project Name:" class="postInfo-container-item">
+              <el-select v-model="postForm.Project_name" :disabled="this.isEdit===true?true:false" style="width:100%" class="filter-item" placeholder="Please select">
+                <el-option v-for="item in project_name_list" :key="item" :label="item" :value="item" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-button v-loading="loading" type="success" @click="submitForm">
+              Submit
+            </el-button>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label-width="120px" label="Update Month:" class="postInfo-container-item">
+              <el-date-picker v-model="postForm.Update" type="month" value-format="yyyy-MM-dd" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <Notice style="margin-bottom: 0px" />
+          <el-form-item style="margin-left: 30px">
+            <Upload :id="postForm.id" v-model="postForm.Picture" />
+          </el-form-item>
           <el-col :span="24">
-            <el-form-item style="margin-bottom: 40px;" prop="title">
+            <el-form-item prop="title">
               <el-col :span="24">
-                <MDinput v-model="postForm.title" :maxlength="50" name="Summary" required>
+                <MDinput v-model="postForm.Summary" :maxlength="800" name="Summary" required>
                   Summary Or Comments
                 </MDinput>
               </el-col>
@@ -34,126 +37,103 @@
 
             <div class="postInfo-container">
               <el-row>
-                <el-col :span="6">
+                <el-col :span="3">
                   <el-form-item label-width="60px" label="COGS:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    <el-input v-model="postForm.Additional_COGS" :rows="1" type="floatarea" />
                   </el-form-item>
                   <el-form-item label-width="60px" label="PROD:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    <el-input v-model="postForm.Productivity" :rows="1" type="floatarea" />
                   </el-form-item>
                   <el-form-item label-width="60px" label="CAPEX:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    <el-input v-model="postForm.CAPEX" :rows="1" type="floatarea" />
                   </el-form-item>
                   <el-form-item label-width="60px" label="Space:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    <el-input v-model="postForm.Space_needed" :rows="1" type="floatarea" />
                   </el-form-item>
                   <el-form-item label-width="80px" label="Y+3 QTY:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    <el-input v-model="postForm.Y_3_QTY" :rows="1" type="floatarea" />
                   </el-form-item>
                   <el-form-item label-width="80px" label="Expense:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    <el-input v-model="postForm.Expense" :rows="1" type="floatarea" />
                   </el-form-item>
                   <el-form-item label-width="80px" label="Payback:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
+                    <el-input v-model="postForm.Payback" :rows="1" type="floatarea" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="6">
                   <el-form-item label-width="120px" label="Current Stage:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
+                    <el-select v-model="postForm.Current_status" class="filter-item" placeholder="Please select">
+                      <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
                     </el-select>
                   </el-form-item>
                   <el-form-item label-width="120px" label="Open Time:" class="postInfo-container-item">
-                    <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+                    <el-date-picker v-model="postForm.Open_date" type="month" value-format="yyyy-MM-dd" />
                   </el-form-item>
                   <el-form-item label-width="120px" label="Do Time:" class="postInfo-container-item">
-                    <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+                    <el-date-picker v-model="postForm.Do_date" type="month" value-format="yyyy-MM-dd" />
                   </el-form-item>
                   <el-form-item label-width="120px" label="Imp Time:" class="postInfo-container-item">
-                    <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+                    <el-date-picker v-model="postForm.IMP_date" type="month" value-format="yyyy-MM-dd" />
                   </el-form-item>
                   <el-form-item label-width="120px" label="Produce Time:" class="postInfo-container-item">
-                    <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+                    <el-date-picker v-model="postForm.Produce_date" type="month" value-format="yyyy-MM-dd" />
                   </el-form-item>
                   <el-form-item label-width="120px" label="Sell Time:" class="postInfo-container-item">
-                    <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+                    <el-date-picker v-model="postForm.Sell_date" type="month" value-format="yyyy-MM-dd" />
                   </el-form-item>
                   <el-form-item label-width="120px" label="Close Time:" class="postInfo-container-item">
-                    <el-date-picker v-model="displayTime" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="Select date and time" />
+                    <el-date-picker v-model="postForm.Close_date" type="month" value-format="yyyy-MM-dd" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Risk1:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
+                    <el-input v-model="postForm.Risk1" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Risk2:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
+                    <el-input v-model="postForm.Risk2" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Risk3:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
+                    <el-input v-model="postForm.Risk3" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Risk4:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
-                  </el-form-item>
-                  <el-form-item prop="image_uri" style="margin-left: 30px">
-                    <Upload v-model="postForm.image_uri" />
+                    <el-input v-model="postForm.Risk4" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="6">
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Action1:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
+                    <el-input v-model="postForm.Action1" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Action2:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
+                    <el-input v-model="postForm.Action2" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Action3:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
+                    <el-input v-model="postForm.Action3" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
                   <el-form-item style="margin-left: 40px;" label-width="70px" label="Action4:">
-                    <el-input v-model="postForm.content_short" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
+                    <el-input v-model="postForm.Action4" :rows="1" type="textarea" class="article-textarea" autosize placeholder="Please enter the content" />
                   </el-form-item>
-                  <el-form-item label-width="120px" label="Update Month:" class="postInfo-container-item">
-                    <el-select v-model="postForm.author" :remote-method="getRemoteUserList" filterable default-first-option remote placeholder="Search user">
-                      <el-option v-for="(item,index) in userListOptions" :key="item+index" :label="item" :value="item" />
-                    </el-select>
-                  </el-form-item>
+
                 </el-col>
               </el-row>
             </div>
           </el-col>
         </el-row>
-
       </div>
     </el-form>
   </div>
 </template>
 
 <script>
-import Tinymce from '@/components/Tinymce'
 import Upload from '@/components/Upload/SingleImage3'
 import MDinput from '@/components/MDinput'
-import Sticky from '@/components/Sticky' // 粘性header组件
+
 import { validURL } from '@/utils/validate'
 import { searchUser } from '@/api/remote-search'
 import Notice from './Notice'
-import { CommentDropdown, PlatformDropdown, SourceUrlDropdown } from './Dropdown'
-import { fetchProject } from '@/api/project'
+import { fetchCard, updateCard } from '@/api/card'
+import { fetch_search_list } from '@/api/project'
 
 const defaultForm = {
   status: 'draft',
@@ -171,7 +151,7 @@ const defaultForm = {
 
 export default {
   name: 'ProjectDetail',
-  components: { Tinymce, MDinput, Upload, Sticky, Notice, CommentDropdown, PlatformDropdown, SourceUrlDropdown },
+  components: { MDinput, Upload, Notice },
   props: {
     isEdit: {
       type: Boolean,
@@ -209,8 +189,10 @@ export default {
       postForm: Object.assign({}, defaultForm),
       loading: false,
       userListOptions: [],
+      project_name_list: null,
+      statusOptions: ['Open', 'Do', 'IMP', 'Produce', 'Sell', 'Closed'],
       rules: {
-        image_uri: [{ validator: validateRequire }],
+        // image_uri: [{ validator: validateRequire }],
         title: [{ validator: validateRequire }],
         content: [{ validator: validateRequire }],
         source_uri: [{ validator: validateSourceUri, trigger: 'blur' }]
@@ -240,6 +222,9 @@ export default {
       const id = this.$route.params && this.$route.params.id
       this.fetchData(id)
     }
+    fetch_search_list().then(response => {
+      this.project_name_list = response.data.distinct_name
+    })
 
     // Why need to make a copy of this.$route here?
     // Because if you enter this page and quickly switch tag, may be in the execution of the setTagsViewTitle function, this.$route is no longer pointing to the current page
@@ -248,17 +233,10 @@ export default {
   },
   methods: {
     fetchData(id) {
-      fetchProject(id).then(response => {
+      fetchCard(id).then(response => {
         this.postForm = response.data
-
-        // just for test
-        this.postForm.title += `Project Id:${this.postForm.id}`
-        this.postForm.content_short += `Project Id:${this.postForm.id}`
-        console.log(this.postForm.title)
-
         // set tagsview title
         this.setTagsViewTitle()
-
         // set page title
         this.setPageTitle()
       }).catch(err => {
@@ -271,7 +249,7 @@ export default {
       this.$store.dispatch('tagsView/updateVisitedView', route)
     },
     setPageTitle() {
-      const title = 'Edit Project'
+      const title = 'Edit Card'
       document.title = `${title} - ${this.postForm.id}`
     },
     submitForm() {
@@ -279,35 +257,20 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$notify({
-            title: '成功',
-            message: '发布文章成功',
-            type: 'success',
-            duration: 2000
+          updateCard(this.postForm, this.postForm.id).then(() => {
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.loading = false
           })
-          this.postForm.status = 'published'
-          this.loading = false
         } else {
           console.log('error submit!!')
           return false
         }
       })
-    },
-    draftForm() {
-      if (this.postForm.content.length === 0 || this.postForm.title.length === 0) {
-        this.$message({
-          message: '请填写必要的标题和内容',
-          type: 'warning'
-        })
-        return
-      }
-      this.$message({
-        message: '保存成功',
-        type: 'success',
-        showClose: true,
-        duration: 1000
-      })
-      this.postForm.status = 'draft'
     },
     getRemoteUserList(query) {
       searchUser(query).then(response => {

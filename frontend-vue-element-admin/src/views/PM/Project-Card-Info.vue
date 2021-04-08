@@ -2,15 +2,16 @@
   <div class="app-container">
     <!--search bar-->
     <div class="filter-container">
-      <el-input v-model="listQuery.Project_name" placeholder="Name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-tag align="right" style="margin-right: 30px" type="danger">单位：MRMB, M2</el-tag>
+      <el-select v-model="listQuery.Project_name" placeholder="Name" style="width: 90px" class="filter-item">
+        <el-option v-for="item in leaderOptions" :key="item" :label="item" :value="item" />
+      </el-select>
+      <!--      <el-input v-model="listQuery.Project_name" placeholder="Name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />-->
       <el-select v-model="listQuery.Project_leader" placeholder="IPL" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in leaderOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.Current_status" placeholder="Stage" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.Project_type" placeholder="Type" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
       </el-select>
       <el-select v-model="listQuery.ordering" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in orderingOptions" :key="item.key" :label="item.label" :value="item.key" />
@@ -18,15 +19,23 @@
       <el-button v-waves class="filter-item" type="primary" style="margin-left: 30px" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        Add
-      </el-button>
+      <router-link :to="'/PM/Project-Card-Info/create/'" style="margin-right: 10px;margin-left: 10px;">
+        <el-button class="filter-item" type="primary" icon="el-icon-edit">
+          Add
+        </el-button>
+      </router-link>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         Export
       </el-button>
-      <!--      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">-->
-      <!--        reviewer-->
-      <!--      </el-checkbox>-->
+      <el-checkbox v-model="showKPI" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+        Actual KPI
+      </el-checkbox>
+      <el-checkbox v-model="showSchedule" class="filter-item" style="margin-left:5px;" @change="tableKey=tableKey+1">
+        Actual Schedule
+      </el-checkbox>
+      <el-checkbox v-model="showRiskAction" class="filter-item" style="margin-left:5px;" @change="tableKey=tableKey+1">
+        Risk & Action
+      </el-checkbox>
     </div>
 
     <el-table
@@ -51,8 +60,7 @@
       </el-table-column>
       <el-table-column label="Name" min-width="100px">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.Project_name }}</span>
-          <!--          <el-tag>{{ row.Project_type | typeFilter }}</el-tag>-->
+          <span>{{ row.Project_name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Leader" width="100px" align="center">
@@ -60,126 +68,133 @@
           <span>{{ row.Project_leader }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Summary" prop="id" orderingable="custom" align="center" width="40" :class-name="getorderingClass('id')">
+      <el-table-column label="Stage" width="100" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <el-tag :type="row.Current_status | statusFilter">
+            {{ row.Current_status }}
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="Photo" width="110px" align="center">
+      <el-table-column label="Summary" align="center" min-width="120px" :class-name="getorderingClass('id')">
         <template slot-scope="{row}">
-          <span>{{ row.Region }}</span>
+          <span>{{ row.Summary }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Update" min-width="100px">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.Project_name }}</span>
-          <!--          <el-tag>{{ row.Project_type | typeFilter }}</el-tag>-->
+          <span>{{ row.Update }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="目前COGS" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Additional_COGS }}</span>
-        </template>
+      <el-table-column v-if="showKPI" label="Actual KPI" width="80px" align="center">
+        <el-table-column label="COGS" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Additional_COGS }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Prod" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Productivity }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Capex" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.CAPEX }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Space" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Space_needed }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Y+3 QTY" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Y_3_QTY }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Expense" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Expense }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Payback" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Payback }}</span>
+          </template>
+        </el-table-column>
       </el-table-column>
-      <el-table-column label="目前Prod" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Additional_COGS }}</span>
-        </template>
+      <el-table-column v-if="showSchedule" label="Actual Schedule" align="center">
+        <el-table-column label="Open" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Open_date }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Do" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Do_date }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="IMP" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.IMP_date }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Produce" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Produce_date }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Sell" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Sell_date }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Close" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Close_date }}</span>
+          </template>
+        </el-table-column>
       </el-table-column>
-      <el-table-column label="目前Capex" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.CAPEX }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="目前Space" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="目前Y+3 QTY" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="目前Expense" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="目前Payback" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="risk1" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="risk2" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="risk3" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="risk" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Open" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Do" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="IMP" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Produce" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Sell" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Close" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Action1" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Action2" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Action3" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Action4" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.Space_needed }}</span>
-        </template>
+      <el-table-column v-if="showRiskAction" label="Risk & Action" align="center">
+        <el-table-column label="risk1" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Risk1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="risk2" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Risk2 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="risk3" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Risk3 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="risk4" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Risk4 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Action1" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Action1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Action2" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Action2 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Action3" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Action3 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="Action4" width="100px" align="center">
+          <template slot-scope="{row}">
+            <span>{{ row.Action4 }}</span>
+          </template>
+        </el-table-column>
       </el-table-column>
       <el-table-column align="center" label="Actions" width="100" fixed="right">
         <template slot-scope="scope">
@@ -195,186 +210,16 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="65px" style="width: 750px; margin-left:30px;">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="Name" prop="name">
-              <el-input v-model="temp.Project_name" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Leader" prop="leader">
-              <el-input v-model="temp.Project_leader" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="Complexity" label-width="90px" prop="leader">
-              <el-select v-model="temp.Current_status" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="6">
-            <el-form-item label="Region">
-              <el-select v-model="temp.Region" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in regionOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Stage">
-              <el-select v-model="temp.Current_status" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Type">
-              <el-select v-model="temp.Project_type" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Code">
-              <el-select v-model="temp.Cluster" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in clusterOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="6">
-            <el-form-item label="Cluster">
-              <el-select v-model="temp.Cluster" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in clusterOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="BU">
-              <el-select v-model="temp.Project_type" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Lob">
-              <el-select v-model="temp.Cluster" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in clusterOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Plant">
-              <el-select v-model="temp.Project_type" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="6">
-            <el-form-item label="COGS">
-              <el-input v-model="temp.Additional_COGS" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Space" prop="leader">
-              <el-input v-model="temp.Space_needed" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="Prod">
-              <el-input v-model="temp.Productivity" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="CAPEX" prop="leader">
-              <el-input v-model="temp.CAPEX" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <el-form-item label="Workload1" label-width="90px">
-              <el-input v-model="temp.Workload_Date" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="Value" label-width="50px">
-              <el-input v-model="temp.Workload" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Workload2" label-width="90px">
-              <el-input v-model="temp.Workload_Date" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="Value" label-width="50px">
-              <el-input v-model="temp.Workload" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <el-form-item label="Workload3" label-width="90px">
-              <el-input v-model="temp.Workload_Date" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="Value" label-width="50px">
-              <el-input v-model="temp.Workload" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="Workload4" label-width="90px">
-              <el-input v-model="temp.Workload_Date" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="4">
-            <el-form-item label="Value" label-width="50px">
-              <el-input v-model="temp.Workload" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
-        </el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 
 <script>
-import { fetchList, fetchPv, createProject, updateProject, deleteProject } from '@/api/project'
+import { fetchList, fetchPv, createCard, updateCard, deleteCard } from '@/api/card'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
+import Pagination from '@/components/Pagination/index'
+import { fetch_search_list } from '@/api/project' // secondary package based on el-pagination
 // import EditForm from '@./Project-Card-Info-edit'
-
-const typeOptions = [
-  { key: 'PMP', display_name: 'PMP' },
-  { key: 'PEP/PWP', display_name: 'PEP/PWP' },
-  { key: 'Rebalancing/Transfer', display_name: 'Reb/Tran' },
-  { key: 'Others', display_name: 'Others' }
-]
-
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
 
 export default {
   name: 'ProjectCardInfo',
@@ -388,9 +233,6 @@ export default {
         Close: 'danger'
       }
       return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
     }
   },
   data() {
@@ -404,18 +246,13 @@ export default {
         limit: 20,
         Current_status: undefined,
         Project_leader: undefined,
-        Project_type: undefined,
         Project_name: undefined,
         ordering: '+id'
       },
-      importanceOptions: [1, 2, 3],
-      typeOptions,
+      showKPI: false, showRiskAction: false, showSchedule: false,
       orderingOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['Open', 'Deployment', 'Produce', 'Close'],
-      leaderOptions: ['Pan Wen', 'HuLin-Alex Cai'],
-      clusterOptions: ['MTOMTS'],
+      project_name_list: null, statusOptions: null, leaderOptions: null, clusterOptions: null,
       regionOptions: ['North', 'South', 'Wuxi', 'East&West'],
-      showReviewer: false,
       temp: {
         id: undefined,
         Region: 'North',
@@ -444,7 +281,7 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        Project_type: [{ required: true, message: 'type is required', trigger: 'change' }],
+        // Project_type: [{ required: true, message: 'type is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         Project_name: [{ required: true, message: 'name is required', trigger: 'blur' }]
       },
@@ -456,15 +293,16 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = true
+      this.listLoading = false
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+      })
+      fetch_search_list().then(response => {
+        this.project_name_list = response.data.distinct_name
+        this.leaderOptions = response.data.distinct_IPL
+        this.clusterOptions = response.data.distinct_Cluster
+        this.statusOptions = response.data.distinct_Current_status
       })
     },
     handleFilter() {
@@ -511,20 +349,12 @@ export default {
         timestamp: new Date()
       }
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           this.temp.author = 'vue-element-admin'
-          createProject(this.temp).then(() => {
+          createCard(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -553,7 +383,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateProject(tempData, this.temp.id).then(() => {
+          updateCard(tempData, this.temp.id).then(() => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -573,7 +403,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async() => {
-        await deleteProject(row.id)
+        await deleteCard(row.id)
         // this.getList()
         this.$message({ type: 'success', message: '删除成功!' })
         this.list.splice(index, 1)

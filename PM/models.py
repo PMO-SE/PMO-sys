@@ -1,3 +1,5 @@
+import os
+import uuid
 from django.db import models
 from rest_framework import reverse
 
@@ -95,7 +97,7 @@ class Project(models.Model):
         ('INMVP', 'INMVP'),
         ('PTACB', 'PTACB'),
         ('PTCCB', 'PTCCB'),
-        ('PTCTR', 'PTCTR'),
+        ('PPCTR', 'PPCTR'),
         ('PTEQP', 'PTEQP'),
         ('PTFDA', 'PTFDA'),
         ('PTFDB', 'PTFDB'),
@@ -171,7 +173,7 @@ class Project(models.Model):
     Project_leader = models.CharField(max_length=30, choices=Name_category, blank=True, null=True)
     Project_type = models.CharField(max_length=30, choices=Type_category, blank=True, null=True)
     Project_code = models.CharField(max_length=30, choices=Code_category, blank=True, null=True)
-    Complexity = models.IntegerField(max_length=30, choices=Complexity_category, blank=True, null=True)
+    Complexity = models.IntegerField(choices=Complexity_category, blank=True, null=True)
     Comment = models.TextField(blank=True, null=True)
 
     # 不应该出现的
@@ -202,6 +204,7 @@ class Project(models.Model):
 
     # 创建信息
     Time_created = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey('auth.User', related_name='projects', on_delete=models.CASCADE, default=2)
 
 
 class Workload(models.Model):
@@ -226,19 +229,23 @@ class Workload(models.Model):
     )
 
     id = models.IntegerField(primary_key=True, auto_created=True)
-    Project_ID = models.ForeignKey("Project", on_delete=models.CASCADE)
+    Project_ID = models.ForeignKey(Project, on_delete=models.CASCADE)
     Year = models.CharField(max_length=5, null=False)
     Quarter = models.CharField(max_length=10, choices=Quarter_category, null=False)
     Leader = models.CharField(max_length=30, choices=Project.Name_category, blank=True, null=True)
     Workload = models.FloatField(null=True, choices=Ratio_category)
 
 
+def user_directory_path(instance, filename):
+    return os.path.join("upload\\image\\", filename)
+
+
 class CardInfo(models.Model):
     id = models.IntegerField(primary_key=True, auto_created=True)
     Project_ID = models.ForeignKey("Project", on_delete=models.CASCADE)
     Update = models.DateField(blank=True, null=True)
-    Summary = models.CharField(max_length=100, blank=True, null=True)
-    Picture = models.BinaryField(blank=True, null=True)
+    Summary = models.CharField(max_length=800, blank=True, null=True)
+    Picture = models.ImageField(upload_to=user_directory_path, null=True)
 
     # KPI
     Additional_COGS = models.FloatField(max_length=10, blank=True, null=True)

@@ -4,14 +4,14 @@
     <div class="filter-container">
       <el-tag align="right" style="margin-right: 30px" type="danger">单位：MRMB, M2</el-tag>
       <el-input v-model="listQuery.Project_name" placeholder="Name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.Project_leader" placeholder="IPL" clearable style="width: 90px" class="filter-item">
+      <el-select v-model="listQuery.Project_leader" placeholder="IPL" clearable style="width: 5.625rem " class="filter-item">
         <el-option v-for="item in leaderOptions" :key="item" :label="item" :value="item" />
       </el-select>
-      <el-select v-model="listQuery.Current_status" placeholder="Stage" clearable style="width: 90px" class="filter-item">
+      <el-select v-model="listQuery.Current_status" placeholder="Stage" clearable style="width: 5.625rem " class="filter-item">
         <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.Project_type" placeholder="Type" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+        <el-option v-for="item in typeOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.ordering" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in orderingOptions" :key="item.key" :label="item.label" :value="item.key" />
@@ -25,8 +25,11 @@
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         Export
       </el-button>
-      <el-checkbox v-model="showCluster" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        Cluster
+      <el-checkbox v-model="showKPI" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+        Target KPI
+      </el-checkbox>
+      <el-checkbox v-model="showSchedule" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+        Target Schedule
       </el-checkbox>
     </div>
 
@@ -87,7 +90,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column v-if="showCluster" label="Cluster" width="110px" align="center">
+      <el-table-column label="Cluster" width="110px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.Cluster }}</span>
         </template>
@@ -102,7 +105,7 @@
           <span>{{ row.Plant }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="KPI" width="80px" align="center">
+      <el-table-column v-if="showKPI" label="Target KPI" width="80px" align="center">
         <el-table-column label="COGS" align="center">
           <template slot-scope="{row}">
             <span>{{ row.Additional_COGS }}</span>
@@ -139,7 +142,7 @@
           </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column label="Schedule" align="center">
+      <el-table-column v-if="showSchedule" label="Target Schedule" align="center">
         <el-table-column label="Open" width="100px" align="center">
           <template slot-scope="{row}">
             <span>{{ row.Open_date }}</span>
@@ -192,7 +195,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="65px" style="width: 780px; margin-left:30px;">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 48.75rem; margin-left:1.2rem;">
         <el-row :gutter="20">
           <el-col :span="11">
             <el-form-item label="Name" prop="name">
@@ -201,12 +204,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="Leader" prop="leader">
-              <el-input v-model="temp.Project_leader" />
+              <el-select v-model="temp.Project_leader" class="filter-item" placeholder="Please select">
+                <el-option v-for="item in leaderOptions" :key="item" :label="item" :value="item" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="Complexity" label-width="90px" prop="leader">
-              <el-select v-model="temp.Complexity" class="filter-item" placeholder="Please select">
+            <el-form-item label="Complexity" label-width="5.625rem " prop="leader">
+              <el-select v-model="temp.Complexity" class="filter-item">
                 <el-option v-for="item in ComplexityOptions" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
@@ -230,7 +235,7 @@
           <el-col :span="6">
             <el-form-item label="Type">
               <el-select v-model="temp.Project_type" class="filter-item" placeholder="Please select">
-                <el-option v-for="item in typeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
+                <el-option v-for="item in typeOptions" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -295,38 +300,55 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="Y+3 QTY">
+              <el-input v-model="temp.Y_3_QTY" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Expense">
+              <el-input v-model="temp.Expense" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="Payback">
+              <el-input v-model="temp.Payback" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="Open" prop="timestamp">
-              <el-date-picker v-model="temp.Open_date" type="month" placeholder="Please pick a date" />
+            <el-form-item label="Open">
+              <el-date-picker v-model="temp.Open_date" type="month" value-format="yyyy-MM-dd" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Do" style="width: 30px">
-              <el-date-picker v-model="temp.Do_date" type="datetime" placeholder="Please pick a date" />
+              <el-date-picker v-model="temp.Do_date" type="month" value-format="yyyy-MM-dd" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="IMP" prop="timestamp">
-              <el-date-picker v-model="temp.IMP_date" type="month" placeholder="Please pick a date" />
+            <el-form-item label="IMP">
+              <el-date-picker v-model="temp.IMP_date" type="month" value-format="yyyy-MM-dd" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Produce" label-width="80px">
-              <el-date-picker v-model="temp.Produce_date" type="datetime" placeholder="Please pick a date" />
+              <el-date-picker v-model="temp.Produce_date" type="month" value-format="yyyy-MM-dd" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="Sell" prop="timestamp">
-              <el-date-picker v-model="temp.Sell_date" type="month" placeholder="Please pick a date" />
+            <el-form-item label="Sell">
+              <el-date-picker v-model="temp.Sell_date" type="month" value-format="yyyy-MM-dd" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Close">
-              <el-date-picker v-model="temp.Close_date" type="datetime" placeholder="Please pick a date" />
+              <el-date-picker v-model="temp.Close_date" type="month" value-format="yyyy-MM-dd" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -337,7 +359,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -352,23 +373,16 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createProject, updateProject, deleteProject } from '@/api/project'
+import { fetchList, fetchPv, createProject, updateProject, deleteProject, fetch_search_list } from '@/api/project'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination/index' // secondary package based on el-pagination
 
-const typeOptions = [
-  { key: 'PMP', display_name: 'PMP' },
-  { key: 'PEP/PWP', display_name: 'PEP/PWP' },
-  { key: 'Rebalancing/Transfer', display_name: 'Reb/Tran' },
-  { key: 'Others', display_name: 'Others' }
-]
-
 // arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
+// const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
+//   acc[cur.key] = cur.display_name
+//   return acc
+// }, {})
 
 export default {
   name: 'ProjectBasicInfo',
@@ -382,10 +396,10 @@ export default {
         Close: 'danger'
       }
       return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
     }
+    // typeFilter(type) {
+    //   return calendarTypeKeyValue[type]
+    // }
   },
   data() {
     return {
@@ -402,31 +416,25 @@ export default {
         Project_name: undefined,
         ordering: '+id'
       },
-      importanceOptions: [1, 2, 3],
-      typeOptions,
       orderingOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['Open', 'Do', 'IMP', 'Produce', 'Sell', 'Closed'],
+      statusOptions: null, typeOptions: null, leaderOptions: null,
+      clusterOptions: null, LobOptions: null, plantOptions: null, BUOptions: null,
       ComplexityOptions: [1, 2, 3, 4, 5],
-      leaderOptions: ['Pan Wen', 'HuLin-Alex Cai'],
-      clusterOptions: ['MTS-MTO', 'MTO-CTO'],
       regionOptions: ['North', 'South', 'Wuxi', 'East&West'],
-      BUOptions: ['PP', 'PS'],
-      LobOptions: ['IDSIG', 'IDWDA'],
       codeOptions: [1, 2, 3, 4, 5],
-      plantOptions: ['SSLVTA', 'SSPA'],
-      showCluster: false, showLob: false, showPlant: false,
+      showKPI: false, showSchedule: false,
       temp: {
         id: undefined,
         Region: 'North',
-        Project_name: 'XSY Name',
+        Project_name: 'Tianji Step2',
         Complexity: 2,
-        Project_leader: 'XSY',
+        Project_leader: 'Songyang XU',
         Project_type: 'PMP',
         Project_code: 2,
-        Plant: 'Plant',
-        Cluster: 'Cluster',
+        Plant: 'SSLVTA',
+        Cluster: 'MTS-MTO',
         BU: 'PP',
-        Lob: 'PPCPT',
+        Lob: 'PPCTR',
         Current_status: 'Open',
         Comment: 'abcdef',
         // KPI
@@ -466,15 +474,21 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = true
       fetchList(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+      })
+      this.listLoading = false
+      // to get the search list
+      fetch_search_list().then(response => {
+        this.project_name_list = response.data.distinct_name
+        this.leaderOptions = response.data.distinct_IPL
+        this.clusterOptions = response.data.distinct_Cluster
+        this.BUOptions = response.data.distinct_BU
+        this.LobOptions = response.data.distinct_Lob
+        this.plantOptions = response.data.distinct_Plant
+        this.statusOptions = response.data.distinct_Current_status
+        this.typeOptions = response.data.distinct_type
       })
     },
     handleFilter() {
@@ -504,21 +518,7 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        Region: 'North',
-        Project_name: 'XSY Name',
-        Project_leader: 'XSY',
-        Project_type: 'PMP',
-        Current_status: 'Open',
-        Plant: 'SSLVTA',
-        Cluster: 'Cluster',
-        Additional_COGS: '200',
-        Space_needed: '20',
-        Productivity: '30',
-        CAPEX: '20',
-        importance: 1,
-        remark: 'blabla',
-        timestamp: new Date()
+        id: undefined
       }
     },
     handleCreate() {

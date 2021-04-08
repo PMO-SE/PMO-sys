@@ -4,6 +4,7 @@
 
 {%block css%}
 <style>
+
     .col-lg-6.mb-4 {
         margin: 0px 0px 5px !important;
         padding: 0px 5px;
@@ -21,6 +22,34 @@
         color: #ffffff;
     }
 
+  .time-horizontal {
+    list-style-type: none;
+    border-top: 1px solid #707070;
+    max-width: 800px;
+    padding: 0px;
+    margin: 0px;
+}
+
+  .time-horizontal li {
+      float: left;
+      position: relative;
+      text-align: center;
+      width: 25%;
+      padding-top: 10px;
+  }
+
+  .time-horizontal li b:before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 47%;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #4c4c4c;
+      border-radius: 8px;
+      background: #4c4c4c;
+  }
+
 </style>
 {% endblock %}
 
@@ -33,7 +62,7 @@
     <div class="collapse navbar-collapse">
         <a class="navbar-brand" href={% url 'homepage' %}><img src="{% static 'img/logo.png' %}" alt="PMO"
                                                                style="max-width:180px;margin-top:0px;"/></a>
-        <h1 class="card_title">{{project.Project_type}} / {{project.Cluster}} / {{project.Plant}}</h1>
+        <h1 class="card_title">{{serializer.Project_name.value}} / {{serializer.Cluster.value}} / {{serializer.Plant.value}}</h1>
     </div>
 </nav>
 <!-- css -->
@@ -54,16 +83,37 @@
                 <h6 class="m-0 font-weight-bold text-primary">Project Summary</h6>
             </div>
             <div class="card-body">
-                <p>Hey, guys! I am a paragraph. This is a test PEP project.
-                    I don't think you can do it yourself, but if you want to earn money, you
-                    must!asdkfhlkjsafhasjdkflahljfhsal
-                    kjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-                    Hey, guys! I am a paragraph. This is a test PEP project.
-                    I don't think you can do it yourself, but if you want to earn money, you
-                    must!asdkfhlkjsafhasjdkflahljfhsal
-                    kjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk</p>
-                <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                    unDraw &rarr;</a>
+              <div class="row">
+                <div class="col-md-4">
+                  <img width="200px" height="200px"src="{{serializer.Picture.value}}">
+                </div>
+                <div class="col-md-8">
+                  <p>{{card.Summary}}</p>
+                  <p>This is the picture address. {{serializer.Picture.value}} You can also put something else here.</p>
+                </div>
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Region</th>
+                      <th>Name</th>
+                      <th>Leader</th>
+                      <th>BU</th>
+                      <th>Lob</th>
+                      <th>Plant</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{serializer.Region.value}}</td>
+                      <td>{{serializer.Project_name.value}}</td>
+                      <td>{{serializer.Project_leader.value}}</td>
+                      <td>{{serializer.BU.value}}</td>
+                      <td>{{serializer.Lob.value}}</td>
+                      <td>{{serializer.Plant.value}}</td>
+                    </tr>
+                  </tbody>
+              </table>
+              </div>
             </div>
         </div>
 
@@ -74,89 +124,54 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">Project KPIs</h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                         aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Dropdown Header:</div>
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-primary text-white shadow">
-                            <div class="card-body">
-                                COGS
-                                <div class="text-white-50 small">100k</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-primary text-white shadow">
-                            <div class="card-body">
-                                COGS
-                                <div class="text-white-50 small">100k</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-success text-white shadow">
-                            <div class="card-body">
-                                Productivity
-                                <div class="text-white-50 small">500k</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-success text-white shadow">
-                            <div class="card-body">
-                                Productivity
-                                <div class="text-white-50 small">500k</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-success text-white shadow">
-                            <div class="card-body">
-                                Productivity
-                                <div class="text-white-50 small">500k</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-success text-white shadow">
-                            <div class="card-body">
-                                Productivity
-                                <div class="text-white-50 small">500k</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-success text-white shadow">
-                            <div class="card-body">
-                                Productivity
-                                <div class="text-white-50 small">500k</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-2">
-                        <div class="card bg-success text-white shadow">
-                            <div class="card-body">
-                                Productivity
-                                <div class="text-white-50 small">500k</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+              <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>KPI</th>
+                      <th>Target</th>
+                      <th>Actual</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>COGS</td>
+                      <td>{{serializer.target_COGS.value}}</td>
+                      <td>{{serializer.Additional_COGS.value}}</td>
+                    </tr>
+                    <tr>
+                      <td>Prod</td>
+                      <td>{{serializer.target_Prod.value}}</td>
+                      <td>{{serializer.Productivity.value}}</td>
+                    </tr>
+                    <tr>
+                      <td>Capex</td>
+                      <td>{{serializer.target_Prod.value}}</td>
+                      <td>{{serializer.Productivity.value}}</td>
+                    </tr>
+                    <tr>
+                      <td>Space</td>
+                      <td>{{serializer.target_Space.value}}</td>
+                      <td>{{serializer.Space_needed.value}}</td>
+                    </tr>
+                    <tr>
+                      <td>Y+3 QTY</td>
+                      <td>{{serializer.target_Y_3_QTY.value}}</td>
+                      <td>{{serializer.Y_3_QTY.value}}</td>
+                    </tr>
+                    <tr>
+                      <td>Expense</td>
+                      <td>{{serializer.target_Expense.value}}</td>
+                      <td>{{serializer.Expense.value}}</td>
+                    </tr>
+                    <tr>
+                      <td>Payback</td>
+                      <td>{{serializer.target_Payback.value}}</td>
+                      <td>{{serializer.Payback.value}}</td>
+                    </tr>
+                  </tbody>
+              </table>
             </div>
         </div>
 
@@ -169,67 +184,102 @@
     <!-- Content Column -->
     <div class="col-lg-6 mb-4">
 
-        <!-- Project Risk -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Projects Risk</h6>
-            </div>
-            <div class="card-body">
-                <h4 class="small font-weight-bold">Server Migration <span
-                        class="float-right">20%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                         aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-
-            </div>
+      <!-- Schedule -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Project Schedule & Risks</h6>
         </div>
-        <!-- Schedule -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Project Schedule</h6>
-            </div>
-            <div class="card-body">
-                <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                    CSS bloat and poor page performance. Custom CSS classes are used to create
-                    custom components and custom utility classes.</p>
-                <p class="mb-0">Before working with this theme, you should become familiar with the
-                    Bootstrap framework, especially the utility classes.</p>
-            </div>
+        <div class="card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Open</th>
+                <th>Do</th>
+                <th>IMP</th>
+                <th>Produce</th>
+                <th>Sell</th>
+                <th>Close</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Target</td>
+                <td>{{serializer.Open_date.value}}</td>
+                <td>{{serializer.Do_date.value}}</td>
+                <td>{{serializer.IMP_date.value}}</td>
+                <td>{{serializer.Produce_date.value}}</td>
+                <td>{{serializer.Sell_date.value}}</td>
+                <td>{{serializer.Close_date.value}}</td>
+              </tr>
+              <tr>
+                <td>Actual</td>
+                <td>{{serializer.Open_date.value}}</td>
+                <td>{{serializer.Do_date.value}}</td>
+                <td>{{serializer.IMP_date.value}}</td>
+                <td>{{serializer.Produce_date.value}}</td>
+                <td>{{serializer.Sell_date.value}}</td>
+                <td>{{serializer.Close_date.value}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th> </th>
+                  <th>Risk</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Risk1</td>
+                  <td>{{serializer.Risk1.value}}</td>
+                </tr>
+                <tr>
+                    <td>Risk2</td>
+                    <td>{{serializer.Risk2.value}}</td>
+                </tr>
+              </tbody>
+          </table>
         </div>
-
-
+      </div>
     </div>
 
     <div class="col-lg-6 mb-4">
-        <!-- Actions -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Project Actions</h6>
-            </div>
-            <div class="card-body">
-                <br>Add some quality, svg illustrations to your project courtesy of <a
-                    target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                constantly updated collection of beautiful svg images that you can use
-                completely free and without attribution!
-                Add some quality, svg illustrations to your project courtesy of, a
-                constantly updated collection of beautiful svg images that you can use
-                completely free and without attribution!</br>
-                Add some quality, svg illustrations to your project courtesy of, a
-                constantly updated collection of beautiful svg images that you can use
-                completely free and without attribution!</p>
-                <!--                <form action="/ProMGT/projects/" method="POST">-->
-                <!--                    {% csrf_token %}-->
-                <!--                    {% render_form serializer %}-->
-                <!--                    <input type="submit" value="Save">-->
-                <!--                </form>-->
-
-                <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                    unDraw &rarr;</a>
-            </div>
+      <!-- Actions -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Project Action</h6>
         </div>
-
-
+        <div class="card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Action Completed</th>
+                <th>Action Coming</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{serializer.Action1.value}}</td>
+                <td>{{serializer.Action1.value}}</td>
+              </tr>
+              <tr>
+                <td>{{serializer.Action2.value}}</td>
+                <td>{{serializer.Action2.value}}</td>
+              </tr>
+              <tr>
+                <td>{{serializer.Action3.value}}</td>
+                <td>{{serializer.Action3.value}}</td>
+              </tr>
+              <tr>
+                <td>{{serializer.Action4.value}}</td>
+                <td>{{serializer.Action4.value}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 </div>
 

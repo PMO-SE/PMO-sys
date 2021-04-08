@@ -49,3 +49,10 @@ export function deleteProject(id) {
     method: 'delete'
   })
 }
+
+export function fetch_search_list() {
+  return request({
+    url: '/search_list/',
+    method: 'get'
+  })
+}
