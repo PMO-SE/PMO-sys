@@ -75,9 +75,10 @@ class userInfoView(APIView):
         token_strings = token.split('.')
         # 得到该登录用户的id,并从auth_user表中筛选出此用户
         user_id = eval(str(base64.b64decode(token_strings[1]), 'utf8'))['user_id']
-        User.objects.filter(id=user_id)
+        User.objects.filter(id=user_id).first()
         if token == "admin-token":
             roles = ["admin"]
+
         else:
             roles = ["editor"]
 
