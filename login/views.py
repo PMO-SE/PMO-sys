@@ -1,4 +1,5 @@
-from django.contrib.auth.models import update_last_login
+import base64
+from django.contrib.auth.models import update_last_login, User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainSerializer, TokenRefreshSerializer
@@ -71,7 +72,10 @@ class TokenRefreshView(TokenViewBase):
 class userInfoView(APIView):
     def get(self, request):
         token = request.query_params.get("token")
-        print('token', token.split())
+        token_strings = token.split('.')
+        # 得到该登录用户的id,并从auth_user表中筛选出此用户
+        user_id = eval(str(base64.b64decode(token_strings[1]), 'utf8'))['user_id']
+        User.objects.filter(id=user_id)
         if token == "admin-token":
             roles = ["admin"]
         else:
